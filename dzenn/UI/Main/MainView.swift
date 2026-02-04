@@ -8,10 +8,15 @@ struct MainView: View {
 
             HStack(spacing: 12) {
                 Button("Start Focus") {
+                    FocusSessionManager.shared.start(
+                        task: "Deep Work",
+                        duration: 25 * 60
+                    )
                     WindowManager.shared.showFloating()
                 }
 
                 Button("Stop Focus") {
+                    FocusSessionManager.shared.stop()
                     WindowManager.shared.hideFloating()
                 }
             }
