@@ -11,7 +11,7 @@ import SwiftUI
 struct dzennApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
 }
