@@ -10,6 +10,7 @@ final class FocusSessionManager: ObservableObject {
     @Published var duration: TimeInterval = 0
     @Published var isActive: Bool = false
     @Published var isPaused: Bool = false
+    @Published var state: SessionState = .idle
 
     let timerService = TimerService()
 
@@ -21,11 +22,8 @@ final class FocusSessionManager: ObservableObject {
             .sink { [weak self] remainingTime, isRunning, timerIsPaused in
                 guard let self else { return }
 
-                if self.isActive, !isRunning, !timerIsPaused, remainingTime <= 0 {
-                    self.isActive = false
-                    self.isPaused = false
-                    self.activeTask = ""
-                    self.duration = 0
+                if self.state != .idle, !isRunning, !timerIsPaused, remainingTime <= 0 {
+                    self.handleTimerFinished()
                 }
             }
             .store(in: &cancellables)
@@ -36,16 +34,14 @@ final class FocusSessionManager: ObservableObject {
         self.duration = duration
         self.isActive = true
         self.isPaused = false
+        self.state = .focusing
 
         timerService.start(duration: duration)
     }
 
     func stop() {
         timerService.stop()
-        isActive = false
-        isPaused = false
-        activeTask = ""
-        duration = 0
+        resetSession()
     }
 
     func pause() {
@@ -58,5 +54,38 @@ final class FocusSessionManager: ObservableObject {
         guard isActive, isPaused else { return }
         timerService.resume()
         isPaused = false
+    }
+
+    func startBreak(type: BreakType, minutes: Int? = nil) {
+        let minutes = minutes ?? (type == .short
+            ? AppConstants.BreakDuration.shortMinutes
+            : AppConstants.BreakDuration.longMinutes)
+
+        activeTask = type.title
+        duration = TimeInterval(minutes * 60)
+        isActive = true
+        isPaused = false
+        state = .breaking(type)
+
+        timerService.start(duration: duration)
+    }
+
+    private func handleTimerFinished() {
+        switch state {
+        case .focusing:
+            startBreak(type: .short)
+        case .breaking:
+            resetSession()
+        case .idle:
+            break
+        }
+    }
+
+    private func resetSession() {
+        isActive = false
+        isPaused = false
+        activeTask = ""
+        duration = 0
+        state = .idle
     }
 }

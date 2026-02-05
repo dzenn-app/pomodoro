@@ -7,7 +7,7 @@ struct FloatingTimerView: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading) {
-                Text(session.activeTask.isEmpty ? "Focus Session" : session.activeTask)
+                Text(titleText)
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.8))
 
@@ -19,7 +19,7 @@ struct FloatingTimerView: View {
             Spacer()
 
             Circle()
-                .fill(timer.isRunning ? Color.green : Color.red)
+                .fill(statusColor)
                 .frame(width: 10, height: 10)
         }
         .padding(14)
@@ -28,6 +28,32 @@ struct FloatingTimerView: View {
             RoundedRectangle(cornerRadius: 18)
                 .fill(Color.black.opacity(0.85))
         )
+    }
+
+    private var titleText: String {
+        if !session.activeTask.isEmpty {
+            return session.activeTask
+        }
+
+        switch session.state {
+        case .idle:
+            return "Idle"
+        case .focusing:
+            return "Focus Session"
+        case .breaking(let type):
+            return type.title
+        }
+    }
+
+    private var statusColor: Color {
+        switch session.state {
+        case .idle:
+            return .gray
+        case .focusing:
+            return timer.isRunning ? .green : .orange
+        case .breaking:
+            return timer.isRunning ? .blue : .orange
+        }
     }
 
     private func format(_ time: TimeInterval) -> String {
