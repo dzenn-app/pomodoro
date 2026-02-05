@@ -4,27 +4,29 @@ import SwiftUI
 
 struct MainView: View {
     @ObservedObject private var session = FocusSessionManager.shared
+    @State private var selectedSessionType: SessionType = .focus
 
     var body: some View {
         VStack(spacing: 20) {
             DurationSelectorView(
-                title: selectorTitle,
+                sessionType: $selectedSessionType,
                 startLabel: startLabel,
-                defaultMinutes: defaultMinutes,
+                focusDefaultMinutes: AppConstants.FocusDuration.defaultMinutes,
+                breakDefaultMinutes: AppConstants.BreakDuration.shortMinutes,
                 minMinutes: AppConstants.FocusDuration.minMinutes,
                 maxMinutes: AppConstants.FocusDuration.maxMinutes,
                 stepMinutes: AppConstants.FocusDuration.stepMinutes,
                 onStart: { minutes in
-                    switch session.state {
-                    case .breaking(let type):
-                        FocusSessionManager.shared.startBreak(
-                            type: type,
-                            minutes: minutes
-                        )
-                    case .idle, .focusing:
+                    switch selectedSessionType {
+                    case .focus:
                         FocusSessionManager.shared.start(
                             task: "Focus Session",
                             duration: TimeInterval(minutes * 60)
+                        )
+                    case .break:
+                        FocusSessionManager.shared.startBreak(
+                            type: .short,
+                            minutes: minutes
                         )
                     }
                     WindowManager.shared.showFloating()
@@ -42,16 +44,16 @@ struct MainView: View {
                 },
                 onRestart: { minutes in
                     FocusSessionManager.shared.stop()
-                    switch session.state {
-                    case .breaking(let type):
-                        FocusSessionManager.shared.startBreak(
-                            type: type,
-                            minutes: minutes
-                        )
-                    case .idle, .focusing:
+                    switch selectedSessionType {
+                    case .focus:
                         FocusSessionManager.shared.start(
                             task: "Focus Session",
                             duration: TimeInterval(minutes * 60)
+                        )
+                    case .break:
+                        FocusSessionManager.shared.startBreak(
+                            type: .short,
+                            minutes: minutes
                         )
                     }
                     WindowManager.shared.showFloating()
@@ -62,34 +64,19 @@ struct MainView: View {
         }
         .padding(.vertical, 24)
         .frame(minWidth: 500, minHeight: 400)
-    }
-
-    private var selectorTitle: String {
-        switch session.state {
-        case .breaking(let type):
-            return type.title
-        case .idle, .focusing:
-            return "Focus Duration"
+        .onChange(of: session.state) { newState in
+            if case .breaking = newState {
+                selectedSessionType = .break
+            }
         }
     }
 
     private var startLabel: String {
-        switch session.state {
-        case .breaking:
+        switch selectedSessionType {
+        case .break:
             return "Start Break"
-        case .idle, .focusing:
+        case .focus:
             return "Start Focus"
-        }
-    }
-
-    private var defaultMinutes: Int {
-        switch session.state {
-        case .breaking(let type):
-            return type == .short
-                ? AppConstants.BreakDuration.shortMinutes
-                : AppConstants.BreakDuration.longMinutes
-        case .idle, .focusing:
-            return AppConstants.FocusDuration.defaultMinutes
         }
     }
 }

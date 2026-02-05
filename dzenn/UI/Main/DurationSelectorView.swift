@@ -3,9 +3,11 @@
 import SwiftUI
 
 struct DurationSelectorView: View {
-    let title: String
+    @Binding var sessionType: SessionType
+
     let startLabel: String
-    let defaultMinutes: Int
+    let focusDefaultMinutes: Int
+    let breakDefaultMinutes: Int
     let minMinutes: Int
     let maxMinutes: Int
     let stepMinutes: Int
@@ -21,9 +23,10 @@ struct DurationSelectorView: View {
     @State private var minutes: Int
 
     init(
-        title: String,
+        sessionType: Binding<SessionType>,
         startLabel: String,
-        defaultMinutes: Int,
+        focusDefaultMinutes: Int,
+        breakDefaultMinutes: Int,
         minMinutes: Int,
         maxMinutes: Int,
         stepMinutes: Int,
@@ -35,9 +38,10 @@ struct DurationSelectorView: View {
         isActive: Bool,
         isPaused: Bool
     ) {
-        self.title = title
+        _sessionType = sessionType
         self.startLabel = startLabel
-        self.defaultMinutes = defaultMinutes
+        self.focusDefaultMinutes = focusDefaultMinutes
+        self.breakDefaultMinutes = breakDefaultMinutes
         self.minMinutes = minMinutes
         self.maxMinutes = maxMinutes
         self.stepMinutes = stepMinutes
@@ -48,14 +52,24 @@ struct DurationSelectorView: View {
         self.onRestart = onRestart
         self.isActive = isActive
         self.isPaused = isPaused
-        _minutes = State(initialValue: defaultMinutes)
+        _minutes = State(initialValue: sessionType.wrappedValue == .focus ? focusDefaultMinutes : breakDefaultMinutes)
     }
 
     var body: some View {
         VStack(spacing: 24) {
-            Text(title)
-                .font(.title2)
-                .fontWeight(.semibold)
+            VStack(spacing: 8) {
+                Text("Session Type")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Picker("", selection: $sessionType) {
+                    ForEach(SessionType.allCases) { type in
+                        Text(type.title).tag(type)
+                    }
+                }
+                .labelsHidden()
+                .pickerStyle(.menu)
+            }
 
             Text("\(minutes) min")
                 .font(.system(size: 48, weight: .bold, design: .rounded))
@@ -115,16 +129,19 @@ struct DurationSelectorView: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .padding(40)
-        .onChange(of: defaultMinutes) { minutes = defaultMinutes }
+        .onChange(of: sessionType) { newValue in
+            minutes = newValue == .focus ? focusDefaultMinutes : breakDefaultMinutes
+        }
     }
 }
 
 struct DurationSelectorView_Previews: PreviewProvider {
     static var previews: some View {
         DurationSelectorView(
-            title: "Focus Duration",
+            sessionType: .constant(.focus),
             startLabel: "Start Focus",
-            defaultMinutes: 25,
+            focusDefaultMinutes: 25,
+            breakDefaultMinutes: 5,
             minMinutes: 5,
             maxMinutes: 120,
             stepMinutes: 5,
