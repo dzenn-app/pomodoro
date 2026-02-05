@@ -45,4 +45,15 @@ final class WindowManager: ObservableObject {
         floatingWindow?.orderOut(nil)
         floatingWindow = nil
     }
+
+    func showMainWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+        if let window = NSApp.windows.first(where: { $0.level != .floating }) {
+            window.deminiaturize(nil)
+            window.makeKeyAndOrderFront(nil)
+        } else if let window = NSApp.mainWindow {
+            window.deminiaturize(nil)
+            window.makeKeyAndOrderFront(nil)
+        }
+    }
 }

@@ -3,7 +3,12 @@
 import SwiftUI
 
 struct DurationSelectorView: View {
-    @State private var minutes: Int = AppConstants.FocusDuration.defaultMinutes
+    let title: String
+    let startLabel: String
+    let defaultMinutes: Int
+    let minMinutes: Int
+    let maxMinutes: Int
+    let stepMinutes: Int
 
     let onStart: (Int) -> Void
     let onPause: () -> Void
@@ -13,9 +18,42 @@ struct DurationSelectorView: View {
     let isActive: Bool
     let isPaused: Bool
 
+    @State private var minutes: Int
+
+    init(
+        title: String,
+        startLabel: String,
+        defaultMinutes: Int,
+        minMinutes: Int,
+        maxMinutes: Int,
+        stepMinutes: Int,
+        onStart: @escaping (Int) -> Void,
+        onPause: @escaping () -> Void,
+        onResume: @escaping () -> Void,
+        onStop: @escaping () -> Void,
+        onRestart: @escaping (Int) -> Void,
+        isActive: Bool,
+        isPaused: Bool
+    ) {
+        self.title = title
+        self.startLabel = startLabel
+        self.defaultMinutes = defaultMinutes
+        self.minMinutes = minMinutes
+        self.maxMinutes = maxMinutes
+        self.stepMinutes = stepMinutes
+        self.onStart = onStart
+        self.onPause = onPause
+        self.onResume = onResume
+        self.onStop = onStop
+        self.onRestart = onRestart
+        self.isActive = isActive
+        self.isPaused = isPaused
+        _minutes = State(initialValue: defaultMinutes)
+    }
+
     var body: some View {
         VStack(spacing: 24) {
-            Text("Focus Duration")
+            Text(title)
                 .font(.title2)
                 .fontWeight(.semibold)
 
@@ -26,29 +64,23 @@ struct DurationSelectorView: View {
             Slider(value: Binding(
                 get: { Double(minutes) },
                 set: { minutes = Int($0.rounded()) }
-            ), in: Double(AppConstants.FocusDuration.minMinutes)...Double(AppConstants.FocusDuration.maxMinutes), step: Double(AppConstants.FocusDuration.stepMinutes))
+            ), in: Double(minMinutes)...Double(maxMinutes), step: Double(stepMinutes))
             .frame(width: 300)
 
             HStack(spacing: 16) {
                 Button("-") {
-                    minutes = max(
-                        AppConstants.FocusDuration.minMinutes,
-                        minutes - AppConstants.FocusDuration.stepMinutes
-                    )
+                    minutes = max(minMinutes, minutes - stepMinutes)
                 }
                 .buttonStyle(.bordered)
 
                 Button("+") {
-                    minutes = min(
-                        AppConstants.FocusDuration.maxMinutes,
-                        minutes + AppConstants.FocusDuration.stepMinutes
-                    )
+                    minutes = min(maxMinutes, minutes + stepMinutes)
                 }
                 .buttonStyle(.bordered)
             }
 
             HStack(spacing: 12) {
-                Button(isActive ? (isPaused ? "Resume" : "Pause") : "Start Focus") {
+                Button(isActive ? (isPaused ? "Resume" : "Pause") : startLabel) {
                     if isActive {
                         if isPaused {
                             onResume()
@@ -83,12 +115,19 @@ struct DurationSelectorView: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .padding(40)
+        .onChange(of: defaultMinutes) { minutes = defaultMinutes }
     }
 }
 
 struct DurationSelectorView_Previews: PreviewProvider {
     static var previews: some View {
         DurationSelectorView(
+            title: "Focus Duration",
+            startLabel: "Start Focus",
+            defaultMinutes: 25,
+            minMinutes: 5,
+            maxMinutes: 120,
+            stepMinutes: 5,
             onStart: { _ in },
             onPause: {},
             onResume: {},
