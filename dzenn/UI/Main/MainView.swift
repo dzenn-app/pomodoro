@@ -1,30 +1,44 @@
+// UI/Main/MainView.swift
+
 import SwiftUI
 
 struct MainView: View {
-    var body: some View {
-        VStack(spacing: 16) {
-            Text("Dzenn Main App")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+    @ObservedObject private var session = FocusSessionManager.shared
 
-            HStack(spacing: 12) {
-                Button("Start Focus") {
+    var body: some View {
+        VStack(spacing: 20) {
+            DurationSelectorView(
+                onStart: { minutes in
                     FocusSessionManager.shared.start(
-                        task: "Deep Work",
-                        duration: 25 * 60
+                        task: "Focus Session",
+                        duration: TimeInterval(minutes * 60)
                     )
                     WindowManager.shared.showFloating()
-                }
-
-                Button("Stop Focus") {
+                },
+                onPause: {
+                    FocusSessionManager.shared.pause()
+                },
+                onResume: {
+                    FocusSessionManager.shared.resume()
+                    WindowManager.shared.showFloating()
+                },
+                onStop: {
                     FocusSessionManager.shared.stop()
                     WindowManager.shared.hideFloating()
-                }
-            }
-            .padding(.bottom, 16)
+                },
+                onRestart: { minutes in
+                    FocusSessionManager.shared.stop()
+                    FocusSessionManager.shared.start(
+                        task: "Focus Session",
+                        duration: TimeInterval(minutes * 60)
+                    )
+                    WindowManager.shared.showFloating()
+                },
+                isActive: session.isActive,
+                isPaused: session.isPaused
+            )
         }
+        .padding(.vertical, 24)
+        .frame(minWidth: 500, minHeight: 400)
     }
-}
-
-#Preview {
-    MainView()
 }

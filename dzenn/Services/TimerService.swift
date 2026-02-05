@@ -7,13 +7,18 @@ final class TimerService: ObservableObject {
 
     @Published var remainingTime: TimeInterval = 0
     @Published var isRunning: Bool = false
+    @Published private(set) var isPaused: Bool = false
 
     private var timer: DispatchSourceTimer?
     private var endTime: Date?
-    private var isPaused = false
+
+    private func cancelTimer() {
+        timer?.cancel()
+        timer = nil
+    }
 
     func start(duration: TimeInterval) {
-        stop()
+        cancelTimer()
 
         remainingTime = duration
         endTime = Date().addingTimeInterval(duration)
@@ -41,8 +46,7 @@ final class TimerService: ObservableObject {
     }
 
     func stop() {
-        timer?.cancel()
-        timer = nil
+        cancelTimer()
         endTime = nil
         isRunning = false
         isPaused = false
@@ -54,8 +58,7 @@ final class TimerService: ObservableObject {
 
         let now = Date()
         remainingTime = max(0, endTime.timeIntervalSince(now))
-        timer?.cancel()
-        timer = nil
+        cancelTimer()
         self.endTime = nil
         isRunning = false
         isPaused = true
