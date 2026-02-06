@@ -17,4 +17,20 @@ final class SessionStore: ObservableObject {
             logs.append(log)
         }
     }
+
+    func history() -> [DayFocusHistory] {
+        logs
+            .sorted { $0.date > $1.date }
+            .map(DayFocusHistory.init)
+    }
+
+    func dailyStats() -> [DailyStats] {
+        logs
+            .sorted { $0.date < $1.date }
+            .map(StatsEngine.dailyStats(from:))
+    }
+
+    func totalStats() -> Stats {
+        StatsEngine.totalStats(from: logs)
+    }
 }
