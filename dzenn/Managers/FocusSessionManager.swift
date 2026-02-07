@@ -13,13 +13,9 @@ final class FocusSessionManager: ObservableObject {
     @Published var state: SessionState = .idle
 
     let timerService = TimerService()
-    let sessionStore = SessionStore.shared
 
     private var cancellables = Set<AnyCancellable>()
     private var completionHandled = false
-    private var currentSessionStart: Date?
-    private var currentSessionType: SessionType?
-    private var currentSessionPlannedDuration: TimeInterval?
 
     private init() {
         timerService.$remainingTime
@@ -45,17 +41,11 @@ final class FocusSessionManager: ObservableObject {
         self.isPaused = false
         self.state = .focusing
         self.completionHandled = false
-        self.currentSessionStart = Date()
-        self.currentSessionType = .focus
-        self.currentSessionPlannedDuration = duration
 
         timerService.start(duration: duration)
     }
 
     func stop() {
-        if isActive {
-            recordCurrentSession(status: .stopped)
-        }
         timerService.stop()
         completionHandled = true
         resetSession()
@@ -84,9 +74,6 @@ final class FocusSessionManager: ObservableObject {
         isPaused = false
         state = .breaking(type)
         completionHandled = false
-        currentSessionStart = Date()
-        currentSessionType = .break
-        currentSessionPlannedDuration = duration
 
         timerService.start(duration: duration)
     }
@@ -95,12 +82,10 @@ final class FocusSessionManager: ObservableObject {
         completionHandled = true
         switch state {
         case .focusing:
-            recordCurrentSession(status: .completed)
             prepareBreak(type: .short)
             WindowManager.shared.hideFloating()
             WindowManager.shared.showMainWindow()
         case .breaking:
-            recordCurrentSession(status: .completed)
             resetSession()
             WindowManager.shared.hideFloating()
             WindowManager.shared.showMainWindow()
@@ -116,7 +101,6 @@ final class FocusSessionManager: ObservableObject {
         duration = 0
         state = .idle
         completionHandled = true
-        clearCurrentSession()
     }
 
     private func prepareBreak(type: BreakType) {
@@ -130,36 +114,5 @@ final class FocusSessionManager: ObservableObject {
         isActive = false
         isPaused = false
         state = .breaking(type)
-    }
-
-    private func recordCurrentSession(status: SessionStatus) {
-        guard let start = currentSessionStart, let type = currentSessionType else { return }
-
-        let end = Date()
-        let planned = currentSessionPlannedDuration ?? end.timeIntervalSince(start)
-        let elapsed: TimeInterval
-
-        switch status {
-        case .completed:
-            elapsed = planned
-        case .stopped, .interrupted:
-            elapsed = max(0, planned - timerService.remainingTime)
-        }
-
-        let record = SessionRecord(
-            type: type,
-            startTime: start,
-            endTime: end,
-            duration: Int(elapsed.rounded()),
-            status: status
-        )
-        sessionStore.add(record)
-        clearCurrentSession()
-    }
-
-    private func clearCurrentSession() {
-        currentSessionStart = nil
-        currentSessionType = nil
-        currentSessionPlannedDuration = nil
     }
 }

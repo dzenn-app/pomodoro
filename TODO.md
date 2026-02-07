@@ -30,12 +30,12 @@
 
 ## Data Layer
 
-15. Session model✅
+15. Session model❌ --- mvp tdk jdi pakai hal2 berkatian dgn data stats
 16. Focus history model
 17. Stats model
 18. Local persistence layer
-19. Session storage✅
-20. Daily aggregation✅
+19. Session storage❌
+20. Daily aggregation❌
 
 ---
 
