@@ -84,9 +84,11 @@ final class FocusSessionManager: ObservableObject {
         case .focusing:
             prepareBreak(type: .short)
             WindowManager.shared.hideFloating()
+            MenuBarController.shared?.showPopover()
         case .breaking:
             resetSession()
             WindowManager.shared.hideFloating()
+            MenuBarController.shared?.showPopover()
         case .idle:
             break
         }

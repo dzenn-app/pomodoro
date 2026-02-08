@@ -4,13 +4,11 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var floatingWindow: NSWindow?
-
-    // func applicationDidFinishLaunching(_ notification: Notification) {
-    //     createFloatingWindow()
-    // }
+    private var menuBarController: MenuBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        menuBarController = MenuBarController()
     }
 
     func createFloatingWindow() {
