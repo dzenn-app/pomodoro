@@ -1,14 +1,13 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    // MARK: - State & Managers
+
     @ObservedObject private var session = FocusSessionManager.shared
     @State private var minutes: Int = 25 
     
     // Presets
     private let presets = [5, 10, 25]
     
-    // Range Slider Config
     private let minTime = 1
     private let maxTime = 60
 

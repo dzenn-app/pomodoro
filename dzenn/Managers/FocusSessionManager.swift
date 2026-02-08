@@ -84,11 +84,9 @@ final class FocusSessionManager: ObservableObject {
         case .focusing:
             prepareBreak(type: .short)
             WindowManager.shared.hideFloating()
-            WindowManager.shared.showMainWindow()
         case .breaking:
             resetSession()
             WindowManager.shared.hideFloating()
-            WindowManager.shared.showMainWindow()
         case .idle:
             break
         }
