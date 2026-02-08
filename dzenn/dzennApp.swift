@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct dzennApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
-        WindowGroup {
-            MainView()
+        MenuBarExtra("Dzenn", systemImage: "timer") {
+            MenuBarView()
         }
+        .menuBarExtraStyle(.window)
     }
 }

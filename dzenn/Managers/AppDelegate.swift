@@ -9,6 +9,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     //     createFloatingWindow()
     // }
 
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
+    }
+
     func createFloatingWindow() {
         let contentView = FloatingTimerView()
 

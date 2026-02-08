@@ -7,6 +7,7 @@ final class WindowManager: ObservableObject {
     static let shared = WindowManager()
     let objectWillChange = ObservableObjectPublisher()
     var floatingWindow: NSWindow?
+    var mainWindow: NSWindow?
 
     func showFloating() {
         if floatingWindow != nil { return }
@@ -48,12 +49,24 @@ final class WindowManager: ObservableObject {
 
     func showMainWindow() {
         NSApp.activate(ignoringOtherApps: true)
-        if let window = NSApp.windows.first(where: { $0.level != .floating }) {
-            window.deminiaturize(nil)
-            window.makeKeyAndOrderFront(nil)
-        } else if let window = NSApp.mainWindow {
-            window.deminiaturize(nil)
-            window.makeKeyAndOrderFront(nil)
+        if mainWindow == nil {
+            mainWindow = makeMainWindow()
         }
+        mainWindow?.deminiaturize(nil)
+        mainWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    private func makeMainWindow() -> NSWindow {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 520, height: 420),
+            styleMask: [.titled, .closable, .resizable, .miniaturizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Dzenn"
+        window.isReleasedWhenClosed = false
+        window.center()
+        window.contentView = NSHostingView(rootView: MainView())
+        return window
     }
 }
