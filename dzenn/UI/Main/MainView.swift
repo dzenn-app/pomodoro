@@ -3,6 +3,53 @@
 import SwiftUI
 
 struct MainView: View {
+    @State private var selection: SidebarItem? = .general
+
+    var body: some View {
+        NavigationSplitView {
+            List(SidebarItem.allCases, selection: $selection) { item in
+                Label(item.title, systemImage: item.systemImage)
+                    .tag(item)
+            }
+            .listStyle(.sidebar)
+        } detail: {
+            switch selection ?? .general {
+            case .general:
+                GeneralSettingsView()
+            case .floatingApp:
+                FloatingAppSettingsView()
+            }
+        }
+        .frame(minWidth: 700, minHeight: 450)
+    }
+}
+
+private enum SidebarItem: String, CaseIterable, Identifiable {
+    case general
+    case floatingApp
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .general:
+            return "General"
+        case .floatingApp:
+            return "Floating App"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .general:
+            return "gearshape"
+        case .floatingApp:
+            return "rectangle.on.rectangle"
+        }
+    }
+}
+
+private struct GeneralSettingsView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @State private var selectedSessionType: SessionType = .focus
 
@@ -63,7 +110,7 @@ struct MainView: View {
             )
         }
         .padding(.vertical, 24)
-        .frame(minWidth: 500, minHeight: 400)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onChange(of: session.state) { newState in
             if case .breaking = newState {
                 selectedSessionType = .break
@@ -78,5 +125,15 @@ struct MainView: View {
         case .focus:
             return "Start Focus"
         }
+    }
+}
+
+private struct FloatingAppSettingsView: View {
+    var body: some View {
+        VStack {
+            Text("Hello World")
+                .font(.title2)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
