@@ -21,6 +21,9 @@ struct DurationSelectorView: View {
     let isPaused: Bool
 
     @State private var minutes: Int
+    @AppStorage("quickPreset1") private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
+    @AppStorage("quickPreset2") private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
+    @AppStorage("quickPreset3") private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
 
     init(
         sessionType: Binding<SessionType>,
@@ -93,6 +96,18 @@ struct DurationSelectorView: View {
                 .buttonStyle(.bordered)
             }
 
+            VStack(spacing: 8) {
+                Text("Quick Presets (minutes)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                HStack(spacing: 12) {
+                    presetField(value: $quickPreset1)
+                    presetField(value: $quickPreset2)
+                    presetField(value: $quickPreset3)
+                }
+            }
+
             HStack(spacing: 12) {
                 Button(isActive ? (isPaused ? "Resume" : "Pause") : startLabel) {
                     if isActive {
@@ -129,10 +144,36 @@ struct DurationSelectorView: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .padding(40)
-        .onChange(of: sessionType) { newValue in
-            minutes = newValue == .focus ? focusDefaultMinutes : breakDefaultMinutes
+        .onChange(of: sessionType) {
+            minutes = sessionType == .focus ? focusDefaultMinutes : breakDefaultMinutes
+        }
+        .onChange(of: quickPreset1) {
+            quickPreset1 = clampPreset(quickPreset1)
+        }
+        .onChange(of: quickPreset2) {
+            quickPreset2 = clampPreset(quickPreset2)
+        }
+        .onChange(of: quickPreset3) {
+            quickPreset3 = clampPreset(quickPreset3)
         }
     }
+
+    private func presetField(value: Binding<Int>) -> some View {
+        TextField("", value: value, formatter: Self.presetFormatter)
+            .textFieldStyle(.roundedBorder)
+            .frame(width: 64)
+            .multilineTextAlignment(.center)
+    }
+
+    private func clampPreset(_ value: Int) -> Int {
+        min(AppConstants.QuickPresets.maxMinutes, max(AppConstants.QuickPresets.minMinutes, value))
+    }
+
+    private static let presetFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        return formatter
+    }()
 }
 
 struct DurationSelectorView_Previews: PreviewProvider {

@@ -6,7 +6,9 @@ struct MenuBarView: View {
     @State private var minutes: Int = 25 
     
     // Presets
-    private let presets = [5, 10, 25]
+    @AppStorage("quickPreset1") private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
+    @AppStorage("quickPreset2") private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
+    @AppStorage("quickPreset3") private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
     
     private let minTime = 1
     private let maxTime = 60
@@ -25,7 +27,7 @@ struct MenuBarView: View {
             
             // ROW 2: PRESETS
             HStack(spacing: 10) {
-                ForEach(presets, id: \.self) { preset in
+                ForEach(Array([quickPreset1, quickPreset2, quickPreset3].enumerated()), id: \.offset) { _, preset in
                     Button(action: { minutes = preset }) {
                         Text("\(preset)m")
                             .font(.system(size: 13, weight: .medium))

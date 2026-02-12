@@ -111,8 +111,8 @@ private struct GeneralSettingsView: View {
         }
         .padding(.vertical, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onChange(of: session.state) { newState in
-            if case .breaking = newState {
+        .onChange(of: session.state) {
+            if case .breaking = session.state {
                 selectedSessionType = .break
             }
         }
