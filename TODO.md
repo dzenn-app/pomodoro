@@ -43,7 +43,7 @@
 
 21. Open main app from menu bar Settings ✅
 22. Configure quick presets (3 options) ✅
-23. Sound toggle/config ❌
+23. Sound toggle/config ✅
 24. Floating theme selector ❌
 25. Floating image toggle ❌
 26. Show/hide timer in floating ❌

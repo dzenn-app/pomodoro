@@ -129,9 +129,12 @@ final class FocusSessionManager: ObservableObject {
             ?? AppConstants.SoundSettings.defaultSoundID
         let autoMuteAfter5Seconds = defaults.object(forKey: AppConstants.SoundSettings.autoMuteAfter5SecondsKey) as? Bool
             ?? false
+        let soundVolume = defaults.object(forKey: AppConstants.SoundSettings.volumeKey) as? Double
+            ?? AppConstants.SoundSettings.defaultVolume
 
         soundAlertPlayer.play(
             soundID: selectedSoundID,
+            volume: soundVolume,
             autoMuteAfter5Seconds: autoMuteAfter5Seconds
         )
     }
@@ -141,7 +144,7 @@ private final class SoundAlertPlayer {
     private var player: AVAudioPlayer?
     private var autoMuteWorkItem: DispatchWorkItem?
 
-    func play(soundID: String, autoMuteAfter5Seconds: Bool) {
+    func play(soundID: String, volume: Double, autoMuteAfter5Seconds: Bool) {
         stop()
 
         guard let option = AppConstants.SoundSettings.options.first(where: { $0.id == soundID }) else {
@@ -168,6 +171,7 @@ private final class SoundAlertPlayer {
         do {
             let player = try AVAudioPlayer(contentsOf: soundURL)
             self.player = player
+            player.volume = Float(min(1.0, max(0.0, volume)))
             player.numberOfLoops = -1
             player.prepareToPlay()
             player.play()

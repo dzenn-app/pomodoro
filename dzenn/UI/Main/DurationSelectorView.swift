@@ -8,6 +8,7 @@ struct DurationSelectorView: View {
     @AppStorage("quickPreset3") private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
     @AppStorage(AppConstants.SoundSettings.selectedSoundKey) private var selectedSoundID: String = AppConstants.SoundSettings.defaultSoundID
     @AppStorage(AppConstants.SoundSettings.autoMuteAfter5SecondsKey) private var autoMuteAfter5Seconds: Bool = false
+    @AppStorage(AppConstants.SoundSettings.volumeKey) private var soundVolume: Double = AppConstants.SoundSettings.defaultVolume
 
     var body: some View {
         VStack(spacing: 20) {
@@ -36,6 +37,22 @@ struct DurationSelectorView: View {
                 .pickerStyle(.menu)
                 .frame(maxWidth: 240, alignment: .leading)
 
+                HStack(spacing: 12) {
+                    Text("Volume")
+                        .frame(width: 60, alignment: .leading)
+
+                    Slider(
+                        value: $soundVolume,
+                        in: AppConstants.SoundSettings.minVolume...AppConstants.SoundSettings.maxVolume,
+                        step: 0.05
+                    )
+
+                    Text("\(Int((soundVolume * 100).rounded()))%")
+                        .monospacedDigit()
+                        .foregroundColor(.secondary)
+                        .frame(width: 44, alignment: .trailing)
+                }
+
                 Toggle("Automatically mute after 5 seconds", isOn: $autoMuteAfter5Seconds)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -45,6 +62,7 @@ struct DurationSelectorView: View {
             if !AppConstants.SoundSettings.options.contains(where: { $0.id == selectedSoundID }) {
                 selectedSoundID = AppConstants.SoundSettings.defaultSoundID
             }
+            soundVolume = clampVolume(soundVolume)
         }
         .onChange(of: quickPreset1) {
             quickPreset1 = clampPreset(quickPreset1)
@@ -54,6 +72,9 @@ struct DurationSelectorView: View {
         }
         .onChange(of: quickPreset3) {
             quickPreset3 = clampPreset(quickPreset3)
+        }
+        .onChange(of: soundVolume) {
+            soundVolume = clampVolume(soundVolume)
         }
     }
 
@@ -66,6 +87,10 @@ struct DurationSelectorView: View {
 
     private func clampPreset(_ value: Int) -> Int {
         min(AppConstants.QuickPresets.maxMinutes, max(AppConstants.QuickPresets.minMinutes, value))
+    }
+
+    private func clampVolume(_ value: Double) -> Double {
+        min(AppConstants.SoundSettings.maxVolume, max(AppConstants.SoundSettings.minVolume, value))
     }
 
     private static let presetFormatter: NumberFormatter = {

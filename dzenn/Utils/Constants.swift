@@ -24,8 +24,12 @@ enum AppConstants {
     enum SoundSettings {
         static let selectedSoundKey = "selectedSoundID"
         static let autoMuteAfter5SecondsKey = "autoMuteAfter5Seconds"
+        static let volumeKey = "soundVolume"
 
         static let defaultSoundID = "alarm-1"
+        static let defaultVolume = 0.6
+        static let minVolume = 0.0
+        static let maxVolume = 1.0
         static let options: [SoundOption] = [
             SoundOption(id: "alarm-1", title: "Alarm 1", fileName: "alarm-1", fileExtension: "m4a"),
             SoundOption(id: "alarm-2", title: "Alarm 2", fileName: "alarm-2", fileExtension: "m4a"),
