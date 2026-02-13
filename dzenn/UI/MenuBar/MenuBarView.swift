@@ -54,7 +54,12 @@ struct MenuBarView: View {
                 Spacer(minLength: 0)
                 
                 Menu {
-                    Button("Settings") { WindowManager.shared.showMainWindow() }
+                    Button("Settings") {
+                        MenuBarController.shared?.openSettingsWindow()
+                        if MenuBarController.shared == nil {
+                            WindowManager.shared.showMainWindow()
+                        }
+                    }
                     Button("Contact Us") { openContact() }
                     Divider()
                     Button("Quit") { NSApp.terminate(nil) }

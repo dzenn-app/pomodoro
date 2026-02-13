@@ -39,4 +39,11 @@ final class MenuBarController: NSObject {
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         NSApp.activate(ignoringOtherApps: true)
     }
+
+    func openSettingsWindow() {
+        popover.performClose(nil)
+        DispatchQueue.main.async {
+            WindowManager.shared.showMainWindow()
+        }
+    }
 }
