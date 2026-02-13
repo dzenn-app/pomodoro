@@ -29,6 +29,7 @@ final class WindowManager: ObservableObject {
         window.hidesOnDeactivate = false
         window.isMovableByWindowBackground = true
         window.isReleasedWhenClosed = false
+        window.isRestorable = false
         window.collectionBehavior = [
             .canJoinAllSpaces,
             .fullScreenAuxiliary
@@ -52,8 +53,20 @@ final class WindowManager: ObservableObject {
         if mainWindow == nil {
             mainWindow = makeMainWindow()
         }
-        mainWindow?.deminiaturize(nil)
-        mainWindow?.makeKeyAndOrderFront(nil)
+        guard let window = mainWindow else { return }
+
+        window.level = .normal
+        window.deminiaturize(nil)
+        window.orderFrontRegardless()
+        window.makeKeyAndOrderFront(nil)
+
+        // When invoked from menu bar popover, run once more on next cycle
+        // to avoid focus race and ensure the settings window is visible.
+        DispatchQueue.main.async {
+            NSApp.activate(ignoringOtherApps: true)
+            window.orderFrontRegardless()
+            window.makeKeyAndOrderFront(nil)
+        }
     }
 
     private func makeMainWindow() -> NSWindow {
@@ -65,6 +78,8 @@ final class WindowManager: ObservableObject {
         )
         window.title = "Dzenn"
         window.isReleasedWhenClosed = false
+        window.isRestorable = false
+        window.identifier = NSUserInterfaceItemIdentifier("DzennMainWindow")
         window.center()
         window.contentView = NSHostingView(rootView: MainView())
         return window

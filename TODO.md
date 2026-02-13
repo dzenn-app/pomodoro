@@ -58,7 +58,12 @@
 30. Theme system (basic) ❌
 31. UI polish ❌
 
----
+## Testing 
+
+32. Coba tes dengar sound paki blutooh atua kabel
+
+
+--- --- AFTER MVP (RELAES 1.1.0)
 
 ## System Layer
 
