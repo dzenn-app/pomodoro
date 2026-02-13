@@ -37,6 +37,11 @@ enum AppConstants {
         ]
     }
 
+    enum FloatingThemeSettings {
+        static let selectedThemeKey = "floatingTheme"
+        static let defaultThemeID = "black"
+    }
+
     enum BreakDuration {
         static let shortMinutes = 5
         static let longMinutes = 15

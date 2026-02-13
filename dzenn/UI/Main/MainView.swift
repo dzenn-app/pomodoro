@@ -58,13 +58,3 @@ private struct GeneralSettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
-
-private struct FloatingAppSettingsView: View {
-    var body: some View {
-        VStack {
-            Text("Hello World")
-                .font(.title2)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}

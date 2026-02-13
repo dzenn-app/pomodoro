@@ -3,17 +3,20 @@ import SwiftUI
 struct FloatingTimerView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
+    @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
 
     var body: some View {
+        let theme = FloatingTheme.from(id: selectedThemeID)
+
         HStack(spacing: 12) {
             VStack(alignment: .leading) {
                 Text(titleText)
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.8))
+                    .foregroundColor(theme.secondaryTextColor)
 
                 Text(format(timer.remainingTime))
                     .font(.system(size: 26, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
+                    .foregroundColor(theme.textColor)
             }
 
             Spacer()
@@ -26,7 +29,11 @@ struct FloatingTimerView: View {
         .frame(width: 260, height: 90)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color.black.opacity(0.85))
+                .fill(theme.backgroundColor)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18)
+                        .stroke(theme.borderColor, lineWidth: 1)
+                )
         )
     }
 
