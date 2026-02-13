@@ -118,3 +118,10 @@
 
 61. Internal testing ❌
 62. MVP ready build ❌
+
+---
+
+# ILMU BARU 
+- Cara add sound ke project
+> setelh sound ada d folder, buka file inspector (⌥ + ⌘ + 1)
+> d target membership, checlist project
