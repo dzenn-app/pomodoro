@@ -106,23 +106,7 @@ struct FloatingTimerView: View {
 
     private func loadImage(path: String) -> NSImage? {
         guard !path.isEmpty else { return nil }
-        if let bookmarkData = UserDefaults.standard.data(forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey) {
-            var isStale = false
-            if let url = try? URL(
-                resolvingBookmarkData: bookmarkData,
-                options: [.withSecurityScope],
-                relativeTo: nil,
-                bookmarkDataIsStale: &isStale
-            ) {
-                let accessGranted = url.startAccessingSecurityScopedResource()
-                defer {
-                    if accessGranted {
-                        url.stopAccessingSecurityScopedResource()
-                    }
-                }
-                return NSImage(contentsOf: url)
-            }
-        }
+        guard FileManager.default.fileExists(atPath: path) else { return nil }
         return NSImage(contentsOfFile: path)
     }
 

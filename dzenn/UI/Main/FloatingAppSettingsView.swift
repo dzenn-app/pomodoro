@@ -53,10 +53,7 @@ struct FloatingAppSettingsView: View {
                         pickImage()
                     }
                     Button("Remove Image") {
-                        imagePath = ""
-                        showTimerOnImage = true
-                        layoutModeID = AppConstants.FloatingLayoutSettings.defaultLayoutID
-                        UserDefaults.standard.removeObject(forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey)
+                        removeStoredImage()
                     }
                     .disabled(!hasSelectedImage)
                 }
@@ -123,15 +120,57 @@ struct FloatingAppSettingsView: View {
         panel.allowedContentTypes = [.image]
         panel.begin { response in
             guard response == .OK, let url = panel.url else { return }
-            do {
-                let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-                UserDefaults.standard.set(bookmark, forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey)
-            } catch {
-                UserDefaults.standard.removeObject(forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey)
+            if let storedPath = copyImageToAppSupport(from: url) {
+                imagePath = storedPath
+            } else {
+                imagePath = url.path
             }
-            imagePath = url.path
             showTimerOnImage = true
             layoutModeID = FloatingLayoutMode.mixed.id
         }
+    }
+
+    private func removeStoredImage() {
+        if isAppSupportImagePath(imagePath) {
+            try? FileManager.default.removeItem(atPath: imagePath)
+        }
+        imagePath = ""
+        showTimerOnImage = true
+        layoutModeID = AppConstants.FloatingLayoutSettings.defaultLayoutID
+    }
+
+    private func copyImageToAppSupport(from url: URL) -> String? {
+        guard let folder = appSupportImagesFolder() else { return nil }
+        let fileExtension = url.pathExtension.isEmpty ? "img" : url.pathExtension
+        let fileName = UUID().uuidString + "." + fileExtension
+        let destinationURL = folder.appendingPathComponent(fileName)
+        do {
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                try FileManager.default.removeItem(at: destinationURL)
+            }
+            try FileManager.default.copyItem(at: url, to: destinationURL)
+            return destinationURL.path
+        } catch {
+            return nil
+        }
+    }
+
+    private func appSupportImagesFolder() -> URL? {
+        guard var folder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        folder.appendPathComponent("Dzenn", isDirectory: true)
+        folder.appendPathComponent("Images", isDirectory: true)
+        do {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            return folder
+        } catch {
+            return nil
+        }
+    }
+
+    private func isAppSupportImagePath(_ path: String) -> Bool {
+        guard let folder = appSupportImagesFolder() else { return false }
+        return path.hasPrefix(folder.path)
     }
 }

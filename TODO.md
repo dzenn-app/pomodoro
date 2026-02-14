@@ -130,3 +130,6 @@
 - Cara add sound ke project
 > setelh sound ada d folder, buka file inspector (⌥ + ⌘ + 1)
 > d target membership, checlist project
+
+---
+# RAPIKAN FLOATINGAPPSETTINGVIEW : 
