@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FloatingAppSettingsView: View {
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
+    @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -17,9 +18,31 @@ struct FloatingAppSettingsView: View {
                         }
                 }
             }
+
+            HStack(spacing: 12) {
+                Text("Opacity")
+                    .frame(width: 60, alignment: .leading)
+
+                Slider(
+                    value: $floatingOpacity,
+                    in: AppConstants.FloatingThemeSettings.minOpacity...AppConstants.FloatingThemeSettings.maxOpacity,
+                    step: 0.05
+                )
+
+                Text("\(Int((floatingOpacity * 100).rounded()))%")
+                    .monospacedDigit()
+                    .foregroundColor(.secondary)
+                    .frame(width: 44, alignment: .trailing)
+            }
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .onAppear {
+            floatingOpacity = clampOpacity(floatingOpacity)
+        }
+        .onChange(of: floatingOpacity) {
+            floatingOpacity = clampOpacity(floatingOpacity)
+        }
     }
 
     private func themeSwatch(theme: FloatingTheme, isSelected: Bool) -> some View {
@@ -37,5 +60,10 @@ struct FloatingAppSettingsView: View {
                 .foregroundColor(.secondary)
         }
         .frame(width: 90)
+    }
+
+    private func clampOpacity(_ value: Double) -> Double {
+        min(AppConstants.FloatingThemeSettings.maxOpacity,
+            max(AppConstants.FloatingThemeSettings.minOpacity, value))
     }
 }

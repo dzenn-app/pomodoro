@@ -4,9 +4,12 @@ struct FloatingTimerView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
+    @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
 
     var body: some View {
         let theme = FloatingTheme.from(id: selectedThemeID)
+        let clampedOpacity = min(AppConstants.FloatingThemeSettings.maxOpacity,
+                                 max(AppConstants.FloatingThemeSettings.minOpacity, floatingOpacity))
 
         HStack(spacing: 12) {
             VStack(alignment: .leading) {
@@ -29,7 +32,7 @@ struct FloatingTimerView: View {
         .frame(width: 260, height: 90)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(theme.backgroundColor)
+                .fill(theme.backgroundColor.opacity(clampedOpacity))
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
                         .stroke(theme.borderColor, lineWidth: 1)

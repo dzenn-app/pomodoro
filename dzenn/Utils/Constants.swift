@@ -40,6 +40,10 @@ enum AppConstants {
     enum FloatingThemeSettings {
         static let selectedThemeKey = "floatingTheme"
         static let defaultThemeID = "black"
+        static let opacityKey = "floatingOpacity"
+        static let defaultOpacity = 0.85
+        static let minOpacity = 0.4
+        static let maxOpacity = 1.0
     }
 
     enum BreakDuration {
