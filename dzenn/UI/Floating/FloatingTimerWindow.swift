@@ -6,6 +6,7 @@ struct FloatingTimerView: View {
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
     @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
+    @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey) private var imagePath: String = ""
 
     var body: some View {
         let theme = FloatingTheme.from(id: selectedThemeID)
@@ -19,11 +20,11 @@ struct FloatingTimerView: View {
                 timerContent(theme: theme)
                     .frame(height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
             case .imageOnly:
-                imageContent(theme: theme)
+                imageContent(theme: theme, imagePath: imagePath)
                     .frame(height: AppConstants.FloatingLayoutSettings.imageOnlyHeight)
             case .mixed:
                 VStack(spacing: 0) {
-                    imageContent(theme: theme)
+                    imageContent(theme: theme, imagePath: imagePath)
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedImageHeight)
                     timerContent(theme: theme)
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedTimerHeight)
@@ -68,16 +69,61 @@ struct FloatingTimerView: View {
         .padding(14)
     }
 
-    private func imageContent(theme: FloatingTheme) -> some View {
+    private func imageContent(theme: FloatingTheme, imagePath: String) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(theme.borderColor)
                 .opacity(0.2)
-            Text("Image")
-                .font(.caption)
-                .foregroundColor(theme.secondaryTextColor)
+
+            if let image = loadImage(path: imagePath) {
+                GeometryReader { proxy in
+                    let containerSize = proxy.size
+                    let shouldFill = image.size.width >= containerSize.width
+                        && image.size.height >= containerSize.height
+
+                    if shouldFill {
+                        Image(nsImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: containerSize.width, height: containerSize.height)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    } else {
+                        Image(nsImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: containerSize.width, height: containerSize.height)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                }
+            } else {
+                Text("Image")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor)
+            }
         }
         .padding(10)
+    }
+
+    private func loadImage(path: String) -> NSImage? {
+        guard !path.isEmpty else { return nil }
+        if let bookmarkData = UserDefaults.standard.data(forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey) {
+            var isStale = false
+            if let url = try? URL(
+                resolvingBookmarkData: bookmarkData,
+                options: [.withSecurityScope],
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            ) {
+                let accessGranted = url.startAccessingSecurityScopedResource()
+                defer {
+                    if accessGranted {
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                }
+                return NSImage(contentsOf: url)
+            }
+        }
+        return NSImage(contentsOfFile: path)
     }
 
     private var titleText: String {

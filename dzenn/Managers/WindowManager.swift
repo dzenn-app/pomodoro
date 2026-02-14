@@ -52,7 +52,7 @@ final class WindowManager: ObservableObject {
     }
 
     func showMainWindow() {
-        NSRunningApplication.current.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
+        NSRunningApplication.current.activate(options: [.activateAllWindows])
         NSApp.activate(ignoringOtherApps: true)
         if mainWindow == nil {
             mainWindow = makeMainWindow()

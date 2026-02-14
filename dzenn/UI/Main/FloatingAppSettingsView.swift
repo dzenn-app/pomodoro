@@ -1,11 +1,16 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct FloatingAppSettingsView: View {
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
-    @State private var hasSelectedImage = false
+    @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
+    @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey) private var imagePath: String = ""
+    @AppStorage(AppConstants.FloatingLayoutSettings.showTimerOnImageKey) private var showTimerOnImage: Bool = true
 
     var body: some View {
+        let hasSelectedImage = !imagePath.isEmpty
+
         VStack(alignment: .leading, spacing: 16) {
             Text("Floating Theme")
                 .font(.title3)
@@ -44,16 +49,23 @@ struct FloatingAppSettingsView: View {
                     .fontWeight(.semibold)
 
                 HStack(spacing: 12) {
-                    Button("Choose Image...") {}
-                    Button("Remove Image") {}
-                        .disabled(!hasSelectedImage)
+                    Button("Choose Image...") {
+                        pickImage()
+                    }
+                    Button("Remove Image") {
+                        imagePath = ""
+                        showTimerOnImage = true
+                        layoutModeID = AppConstants.FloatingLayoutSettings.defaultLayoutID
+                        UserDefaults.standard.removeObject(forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey)
+                    }
+                    .disabled(!hasSelectedImage)
                 }
 
-                Text(hasSelectedImage ? "Image selected" : "No image selected")
+                Text(hasSelectedImage ? (URL(fileURLWithPath: imagePath).lastPathComponent) : "No image selected")
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                Toggle("Show timer on top of image", isOn: .constant(true))
+                Toggle("Show timer on top of image", isOn: $showTimerOnImage)
                     .disabled(!hasSelectedImage)
             }
         }
@@ -61,9 +73,16 @@ struct FloatingAppSettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .onAppear {
             floatingOpacity = clampOpacity(floatingOpacity)
+            updateLayoutMode()
         }
         .onChange(of: floatingOpacity) {
             floatingOpacity = clampOpacity(floatingOpacity)
+        }
+        .onChange(of: imagePath) {
+            updateLayoutMode()
+        }
+        .onChange(of: showTimerOnImage) {
+            updateLayoutMode()
         }
     }
 
@@ -87,5 +106,32 @@ struct FloatingAppSettingsView: View {
     private func clampOpacity(_ value: Double) -> Double {
         min(AppConstants.FloatingThemeSettings.maxOpacity,
             max(AppConstants.FloatingThemeSettings.minOpacity, value))
+    }
+
+    private func updateLayoutMode() {
+        if imagePath.isEmpty {
+            layoutModeID = AppConstants.FloatingLayoutSettings.defaultLayoutID
+        } else {
+            layoutModeID = showTimerOnImage ? FloatingLayoutMode.mixed.id : FloatingLayoutMode.imageOnly.id
+        }
+    }
+
+    private func pickImage() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.allowedContentTypes = [.image]
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            do {
+                let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                UserDefaults.standard.set(bookmark, forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey)
+            } catch {
+                UserDefaults.standard.removeObject(forKey: AppConstants.FloatingLayoutSettings.imageBookmarkKey)
+            }
+            imagePath = url.path
+            showTimerOnImage = true
+            layoutModeID = FloatingLayoutMode.mixed.id
+        }
     }
 }

@@ -49,6 +49,9 @@ enum AppConstants {
     enum FloatingLayoutSettings {
         static let selectedLayoutKey = "floatingLayoutMode"
         static let defaultLayoutID = "timerOnly"
+        static let imagePathKey = "floatingImagePath"
+        static let imageBookmarkKey = "floatingImageBookmark"
+        static let showTimerOnImageKey = "showTimerOnImage"
         static let width: CGFloat = 260
         static let timerOnlyHeight: CGFloat = 90
         static let imageOnlyHeight: CGFloat = 200
