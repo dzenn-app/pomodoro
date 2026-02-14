@@ -3,6 +3,7 @@ import SwiftUI
 struct FloatingAppSettingsView: View {
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
+    @State private var hasSelectedImage = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -33,6 +34,27 @@ struct FloatingAppSettingsView: View {
                     .monospacedDigit()
                     .foregroundColor(.secondary)
                     .frame(width: 44, alignment: .trailing)
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Floating Image")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 12) {
+                    Button("Choose Image...") {}
+                    Button("Remove Image") {}
+                        .disabled(!hasSelectedImage)
+                }
+
+                Text(hasSelectedImage ? "Image selected" : "No image selected")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Toggle("Show timer on top of image", isOn: .constant(true))
+                    .disabled(!hasSelectedImage)
             }
         }
         .padding(24)

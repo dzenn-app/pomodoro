@@ -14,9 +14,12 @@ final class WindowManager: ObservableObject {
 
         objectWillChange.send()
         let contentView = FloatingTimerView()
+        let layoutMode = FloatingLayoutMode.from(id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
+            ?? AppConstants.FloatingLayoutSettings.defaultLayoutID)
+        let contentSize = layoutMode.contentSize
 
         let window = NSPanel(
-            contentRect: NSRect(x: 100, y: 600, width: 260, height: 90),
+            contentRect: NSRect(x: 100, y: 600, width: contentSize.width, height: contentSize.height),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -84,5 +87,11 @@ final class WindowManager: ObservableObject {
         window.center()
         window.contentView = NSHostingView(rootView: MainView())
         return window
+    }
+
+    func updateFloatingSize(mode: FloatingLayoutMode) {
+        guard let window = floatingWindow else { return }
+        let size = mode.contentSize
+        window.setContentSize(size)
     }
 }

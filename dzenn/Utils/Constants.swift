@@ -46,6 +46,17 @@ enum AppConstants {
         static let maxOpacity = 1.0
     }
 
+    enum FloatingLayoutSettings {
+        static let selectedLayoutKey = "floatingLayoutMode"
+        static let defaultLayoutID = "timerOnly"
+        static let width: CGFloat = 260
+        static let timerOnlyHeight: CGFloat = 90
+        static let imageOnlyHeight: CGFloat = 200
+        static let mixedHeight: CGFloat = 240
+        static let mixedImageHeight: CGFloat = 150
+        static let mixedTimerHeight: CGFloat = 90
+    }
+
     enum BreakDuration {
         static let shortMinutes = 5
         static let longMinutes = 15
