@@ -3,9 +3,9 @@
 import SwiftUI
 
 struct DurationSelectorView: View {
-    @AppStorage("quickPreset1") private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
-    @AppStorage("quickPreset2") private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
-    @AppStorage("quickPreset3") private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
+    @AppStorage(AppConstants.QuickPresets.preset1Key) private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
+    @AppStorage(AppConstants.QuickPresets.preset2Key) private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
+    @AppStorage(AppConstants.QuickPresets.preset3Key) private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
     @AppStorage(AppConstants.SoundSettings.selectedSoundKey) private var selectedSoundID: String = AppConstants.SoundSettings.defaultSoundID
     @AppStorage(AppConstants.SoundSettings.autoMuteAfter5SecondsKey) private var autoMuteAfter5Seconds: Bool = false
     @AppStorage(AppConstants.SoundSettings.volumeKey) private var soundVolume: Double = AppConstants.SoundSettings.defaultVolume

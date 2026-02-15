@@ -16,6 +16,9 @@ enum AppConstants {
     }
 
     enum QuickPresets {
+        static let preset1Key = "quickPreset1"
+        static let preset2Key = "quickPreset2"
+        static let preset3Key = "quickPreset3"
         static let defaultValues = [5, 10, 25]
         static let minMinutes = 1
         static let maxMinutes = 60
