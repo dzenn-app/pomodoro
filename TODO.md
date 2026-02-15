@@ -45,8 +45,8 @@
 22. Configure quick presets (3 options) ✅
 23. Sound toggle/config ✅
 24. Floating theme selector ✅ + opacity setting ✅
-25. Floating image toggle ❌
-26. Show/hide timer in floating ❌
+25. Floating image toggle ✅
+26. Show/hide timer in floating ✅
 
 ---
 
