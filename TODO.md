@@ -133,3 +133,16 @@
 
 ---
 # RAPIKAN FLOATINGAPPSETTINGVIEW : 
+
+
+SIDEBAR JDI : 
+- Core
+- Floating
+
+GLASSY EFEFCT : 
+mainnya d file
+- dzenn/UI/Floating/FloatingTheme.swift
+- dzenn/UI/Floating/FloatingTimerWindow.swift
+
+nnti baru dipanggil di 
+dzenn/UI/Main/FloatingAppSettingsView.swift (jdi disini g pelru dirubah)

@@ -34,14 +34,10 @@ struct FloatingTimerView: View {
             }
         }
         .frame(width: AppConstants.FloatingLayoutSettings.width)
-        .background(
-            RoundedRectangle(cornerRadius: 18)
-                .fill(theme.backgroundColor.opacity(clampedOpacity))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18)
-                        .stroke(theme.borderColor, lineWidth: 1)
-                )
-        )
+        .background(panelBackground(theme: theme, opacity: clampedOpacity))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .animation(.easeInOut(duration: 0.28), value: selectedThemeID)
+        .animation(.easeInOut(duration: 0.2), value: floatingOpacity)
         .onAppear {
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
         }
@@ -100,6 +96,64 @@ struct FloatingTimerView: View {
             }
         }
         .padding(10)
+    }
+
+    @ViewBuilder
+    private func panelBackground(theme: FloatingTheme, opacity: Double) -> some View {
+        let panelShape = RoundedRectangle(cornerRadius: 18)
+
+        if theme.usesGlassyBackground {
+            let tintOpacity = max(0.08, min(0.25, opacity * 0.25))
+
+            if #available(macOS 26.0, *) {
+                Color.clear
+                    .glassEffect(
+                        .regular.tint(Color.white.opacity(tintOpacity)),
+                        in: panelShape
+                    )
+                    .overlay(
+                        panelShape
+                            .stroke(Color.white.opacity(0.38), lineWidth: 0.9)
+                    )
+                    .overlay(
+                        panelShape
+                            .stroke(
+                                LinearGradient(
+                                    colors: [
+                                        Color.white.opacity(0.55),
+                                        Color.white.opacity(0.16),
+                                        Color.white.opacity(0.05)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1.2
+                            )
+                    )
+                    .shadow(color: Color.black.opacity(0.14), radius: 10, x: 0, y: 7)
+                    .shadow(color: Color.black.opacity(0.08), radius: 22, x: 0, y: 2)
+            } else {
+                panelShape
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        panelShape
+                            .fill(Color.white.opacity(tintOpacity))
+                    )
+                    .overlay(
+                        panelShape
+                            .stroke(Color.white.opacity(0.42), lineWidth: 0.9)
+                    )
+                    .shadow(color: Color.black.opacity(0.14), radius: 10, x: 0, y: 7)
+                    .shadow(color: Color.black.opacity(0.08), radius: 22, x: 0, y: 2)
+            }
+        } else {
+            panelShape
+                .fill(theme.backgroundColor.opacity(opacity))
+                .overlay(
+                    panelShape
+                        .stroke(theme.borderColor, lineWidth: 1)
+                )
+        }
     }
 
     private func loadImage(path: String) -> NSImage? {
