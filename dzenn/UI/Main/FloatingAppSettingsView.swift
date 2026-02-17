@@ -2,7 +2,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct FloatingAppSettingsView: View {
-    @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
     @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
     @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey) private var imagePath: String = ""
@@ -16,7 +15,7 @@ struct FloatingAppSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                themeSection
+                appearanceSection
                 Divider()
                 imageSection
             }
@@ -44,20 +43,11 @@ struct FloatingAppSettingsView: View {
 
     // MARK: - Subviews
 
-    private var themeSection: some View {
+    private var appearanceSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Floating Theme")
+            Text("Floating Appearance")
                 .font(.title3)
                 .fontWeight(.semibold)
-
-            HStack(spacing: 16) {
-                ForEach(FloatingTheme.allCases) { theme in
-                    themeSwatch(theme: theme, isSelected: theme.id == selectedThemeID)
-                        .onTapGesture {
-                            selectedThemeID = theme.id
-                        }
-                }
-            }
 
             opacityRow
         }
@@ -141,23 +131,6 @@ struct FloatingAppSettingsView: View {
                 .foregroundColor(.secondary)
         }
         .padding(.top, 8)
-    }
-
-    private func themeSwatch(theme: FloatingTheme, isSelected: Bool) -> some View {
-        VStack(spacing: 8) {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(theme.backgroundColor)
-                .frame(width: 90, height: 60)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(isSelected ? Color.accentColor : theme.borderColor, lineWidth: isSelected ? 2 : 1)
-                )
-
-            Text(theme.title)
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(width: 90)
     }
 
     private var previewAspectRatio: CGFloat {

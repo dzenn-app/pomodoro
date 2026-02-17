@@ -4,7 +4,6 @@ struct FloatingTimerView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
     
-    @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
     @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
     @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey) private var imagePath: String = ""
@@ -12,7 +11,7 @@ struct FloatingTimerView: View {
     @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetYKey) private var imageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
 
     var body: some View {
-        let theme = FloatingTheme.from(id: selectedThemeID)
+        let theme: FloatingTheme = .black
         let clampedOpacity = min(AppConstants.FloatingThemeSettings.maxOpacity,
                                  max(AppConstants.FloatingThemeSettings.minOpacity, floatingOpacity))
         let layoutMode = FloatingLayoutMode.from(id: layoutModeID)
@@ -37,7 +36,6 @@ struct FloatingTimerView: View {
         .frame(width: AppConstants.FloatingLayoutSettings.width)
         .background(panelBackground(theme: theme, opacity: clampedOpacity))
         .clipShape(RoundedRectangle(cornerRadius: 18))
-        .animation(.easeInOut(duration: 0.28), value: selectedThemeID)
         .animation(.easeInOut(duration: 0.2), value: floatingOpacity)
         .onAppear {
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
@@ -103,34 +101,13 @@ struct FloatingTimerView: View {
     private func panelBackground(theme: FloatingTheme, opacity: Double) -> some View {
         let panelShape = RoundedRectangle(cornerRadius: 18)
 
-        if theme.usesGlassyBackground {
-            ZStack {
-                panelShape
-                    .fill(theme.glassFallbackMaterial)
-                panelShape
-                    .fill(theme.glassFallbackTint.opacity(opacity))
-            }
+        panelShape
+            .fill(theme.backgroundColor.opacity(opacity))
             .overlay(
                 panelShape
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [theme.glassFallbackHighlightStart, theme.glassFallbackHighlightEnd],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
-                    )
+                    .stroke(theme.borderColor, lineWidth: 1)
             )
-            .shadow(color: Color.black.opacity(0.15), radius: 12, x: 0, y: 6)
-        } else {
-            panelShape
-                .fill(theme.backgroundColor.opacity(opacity))
-                .overlay(
-                    panelShape
-                        .stroke(theme.borderColor, lineWidth: 1)
-                )
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        }
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 
     private func loadImage(path: String) -> NSImage? {
