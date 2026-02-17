@@ -3,6 +3,8 @@ import SwiftUI
 struct FloatingTimerView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
+    
+    // Settings
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
     @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
@@ -103,56 +105,44 @@ struct FloatingTimerView: View {
         let panelShape = RoundedRectangle(cornerRadius: 18)
 
         if theme.usesGlassyBackground {
-            let tintOpacity = max(0.08, min(0.25, opacity * 0.25))
-
-            if #available(macOS 26.0, *) {
-                Color.clear
-                    .glassEffect(
-                        .regular.tint(Color.white.opacity(tintOpacity)),
-                        in: panelShape
-                    )
-                    .overlay(
-                        panelShape
-                            .stroke(Color.white.opacity(0.38), lineWidth: 0.9)
-                    )
-                    .overlay(
-                        panelShape
-                            .stroke(
-                                LinearGradient(
-                                    colors: [
-                                        Color.white.opacity(0.55),
-                                        Color.white.opacity(0.16),
-                                        Color.white.opacity(0.05)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1.2
-                            )
-                    )
-                    .shadow(color: Color.black.opacity(0.14), radius: 10, x: 0, y: 7)
-                    .shadow(color: Color.black.opacity(0.08), radius: 22, x: 0, y: 2)
-            } else {
+            // Glass / Liquid Effect Logic
+            ZStack {
+                // 1. Native Material Blur
                 panelShape
                     .fill(.ultraThinMaterial)
-                    .overlay(
-                        panelShape
-                            .fill(Color.white.opacity(tintOpacity))
-                    )
-                    .overlay(
-                        panelShape
-                            .stroke(Color.white.opacity(0.42), lineWidth: 0.9)
-                    )
-                    .shadow(color: Color.black.opacity(0.14), radius: 10, x: 0, y: 7)
-                    .shadow(color: Color.black.opacity(0.08), radius: 22, x: 0, y: 2)
+                
+                // 2. White Tint for Liquid/Glassy look
+                panelShape
+                    .fill(Color.white.opacity(0.12))
             }
+            // 3. Gradient Border for Light Reflection
+            .overlay(
+                panelShape
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                .white.opacity(0.6),
+                                .white.opacity(0.15),
+                                .white.opacity(0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            // 4. Shadow for Depth
+            .shadow(color: Color.black.opacity(0.15), radius: 12, x: 0, y: 6)
+            
         } else {
+            // Standard Solid Theme (Black/Cream)
             panelShape
                 .fill(theme.backgroundColor.opacity(opacity))
                 .overlay(
                     panelShape
                         .stroke(theme.borderColor, lineWidth: 1)
                 )
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
         }
     }
 
