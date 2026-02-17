@@ -6,6 +6,7 @@ import SwiftUI
 final class WindowManager: ObservableObject {
     static let shared = WindowManager()
     let objectWillChange = ObservableObjectPublisher()
+    
     var floatingWindow: NSWindow?
     var mainWindow: NSWindow?
 
@@ -13,21 +14,29 @@ final class WindowManager: ObservableObject {
         if floatingWindow != nil { return }
 
         objectWillChange.send()
-        let contentView = FloatingTimerView()
+        
+        // Mengambil layout mode untuk menentukan ukuran awal
         let layoutMode = FloatingLayoutMode.from(id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
             ?? AppConstants.FloatingLayoutSettings.defaultLayoutID)
         let contentSize = layoutMode.contentSize
+        
+        // Inisialisasi View
+        let contentView = FloatingTimerView()
 
+        // Setup NSPanel
         let window = NSPanel(
             contentRect: NSRect(x: 100, y: 600, width: contentSize.width, height: contentSize.height),
-            styleMask: [.borderless, .nonactivatingPanel],
+            styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView], // Added fullSizeContentView
             backing: .buffered,
             defer: false
         )
 
+        // Konfigurasi Transparansi & Glass
         window.isOpaque = false
         window.backgroundColor = .clear
-        window.hasShadow = true
+        window.hasShadow = false // PENTING: Set false agar shadow diatur oleh SwiftUI (rounded), bukan kotak window
+        
+        // Konfigurasi Level & Behavior
         window.level = .floating
         window.hidesOnDeactivate = false
         window.isMovableByWindowBackground = true
@@ -38,6 +47,7 @@ final class WindowManager: ObservableObject {
             .fullScreenAuxiliary
         ]
 
+        // Hosting View
         window.contentView = NSHostingView(rootView: contentView)
         window.orderFrontRegardless()
 
@@ -54,6 +64,7 @@ final class WindowManager: ObservableObject {
     func showMainWindow() {
         NSRunningApplication.current.activate(options: [.activateAllWindows])
         NSApp.activate(ignoringOtherApps: true)
+        
         if mainWindow == nil {
             mainWindow = makeMainWindow()
         }
@@ -64,8 +75,7 @@ final class WindowManager: ObservableObject {
         window.orderFrontRegardless()
         window.makeKeyAndOrderFront(nil)
 
-        // When invoked from menu bar popover, run once more on next cycle
-        // to avoid focus race and ensure the settings window is visible.
+        // Ensure visible & focused
         DispatchQueue.main.async {
             NSApp.activate(ignoringOtherApps: true)
             window.orderFrontRegardless()
@@ -92,6 +102,11 @@ final class WindowManager: ObservableObject {
     func updateFloatingSize(mode: FloatingLayoutMode) {
         guard let window = floatingWindow else { return }
         let size = mode.contentSize
-        window.setContentSize(size)
+        
+        // Animasi resize window agar halus
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.2
+            window.animator().setContentSize(size)
+        }
     }
 }

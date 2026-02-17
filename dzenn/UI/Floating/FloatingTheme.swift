@@ -85,6 +85,39 @@ enum FloatingTheme: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Fallback blur material for systems without native Liquid Glass API.
+    var glassFallbackMaterial: Material {
+        .ultraThinMaterial
+    }
+
+    /// Single-source tint so opacity is controlled in one place.
+    var glassFallbackTint: Color {
+        switch self {
+        case .glassy:
+            return Color.white.opacity(0.14)
+        default:
+            return .clear
+        }
+    }
+
+    var glassFallbackHighlightStart: Color {
+        switch self {
+        case .glassy:
+            return .white.opacity(0.50)
+        default:
+            return .clear
+        }
+    }
+
+    var glassFallbackHighlightEnd: Color {
+        switch self {
+        case .glassy:
+            return .white.opacity(0.10)
+        default:
+            return .clear
+        }
+    }
+
     // MARK: - Backward Compatibility
 
     static func from(id: String) -> FloatingTheme {

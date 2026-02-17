@@ -4,7 +4,6 @@ struct FloatingTimerView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
     
-    // Settings
     @AppStorage(AppConstants.FloatingThemeSettings.selectedThemeKey) private var selectedThemeID: String = AppConstants.FloatingThemeSettings.defaultThemeID
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
     @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
@@ -105,37 +104,25 @@ struct FloatingTimerView: View {
         let panelShape = RoundedRectangle(cornerRadius: 18)
 
         if theme.usesGlassyBackground {
-            // Glass / Liquid Effect Logic
             ZStack {
-                // 1. Native Material Blur
                 panelShape
-                    .fill(.ultraThinMaterial)
-                
-                // 2. White Tint for Liquid/Glassy look
+                    .fill(theme.glassFallbackMaterial)
                 panelShape
-                    .fill(Color.white.opacity(0.12))
+                    .fill(theme.glassFallbackTint.opacity(opacity))
             }
-            // 3. Gradient Border for Light Reflection
             .overlay(
                 panelShape
                     .strokeBorder(
                         LinearGradient(
-                            colors: [
-                                .white.opacity(0.6),
-                                .white.opacity(0.15),
-                                .white.opacity(0.05)
-                            ],
+                            colors: [theme.glassFallbackHighlightStart, theme.glassFallbackHighlightEnd],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
                         lineWidth: 1
                     )
             )
-            // 4. Shadow for Depth
             .shadow(color: Color.black.opacity(0.15), radius: 12, x: 0, y: 6)
-            
         } else {
-            // Standard Solid Theme (Black/Cream)
             panelShape
                 .fill(theme.backgroundColor.opacity(opacity))
                 .overlay(
@@ -156,25 +143,18 @@ struct FloatingTimerView: View {
         if !session.activeTask.isEmpty {
             return session.activeTask
         }
-
         switch session.state {
-        case .idle:
-            return "Idle"
-        case .focusing:
-            return "Focus Session"
-        case .breaking(let type):
-            return type.title
+        case .idle: return "Idle"
+        case .focusing: return "Focus Session"
+        case .breaking(let type): return type.title
         }
     }
 
     private var statusColor: Color {
         switch session.state {
-        case .idle:
-            return .gray
-        case .focusing:
-            return timer.isRunning ? .green : .orange
-        case .breaking:
-            return timer.isRunning ? .blue : .orange
+        case .idle: return .gray
+        case .focusing: return timer.isRunning ? .green : .orange
+        case .breaking: return timer.isRunning ? .blue : .orange
         }
     }
 
