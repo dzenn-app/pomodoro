@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct FloatingTimerView: View {
-    @ObservedObject private var session = FocusSessionManager.shared
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
     
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
@@ -55,24 +54,17 @@ struct FloatingTimerView: View {
     }
 
     private func timerContent(theme: FloatingTheme) -> some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading) {
-                Text(titleText)
-                    .font(.caption)
-                    .foregroundColor(theme.secondaryTextColor)
-
-                Text(format(timer.remainingTime))
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
-                    .foregroundColor(theme.textColor)
-            }
-
+        HStack {
             Spacer()
-
-            Circle()
-                .fill(statusColor)
-                .frame(width: 10, height: 10)
+            Text(format(timer.remainingTime))
+                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .foregroundColor(theme.textColor)
+                .monospacedDigit()
+            Spacer()
         }
-        .padding(14)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 0)
+        .frame(maxHeight: .infinity)
     }
 
     private func imageContent(theme: FloatingTheme, imagePath: String) -> some View {
@@ -123,25 +115,6 @@ struct FloatingTimerView: View {
         guard !path.isEmpty else { return nil }
         guard FileManager.default.fileExists(atPath: path) else { return nil }
         return NSImage(contentsOfFile: path)
-    }
-
-    private var titleText: String {
-        if !session.activeTask.isEmpty {
-            return session.activeTask
-        }
-        switch session.state {
-        case .idle: return "Idle"
-        case .focusing: return "Focus Session"
-        case .breaking(let type): return type.title
-        }
-    }
-
-    private var statusColor: Color {
-        switch session.state {
-        case .idle: return .gray
-        case .focusing: return timer.isRunning ? .green : .orange
-        case .breaking: return timer.isRunning ? .blue : .orange
-        }
     }
 
     private func format(_ time: TimeInterval) -> String {
