@@ -21,7 +21,7 @@ enum FloatingLayoutMode: String, CaseIterable, Identifiable {
     var contentSize: CGSize {
         switch self {
         case .timerOnly:
-            return CGSize(width: AppConstants.FloatingLayoutSettings.width,
+            return CGSize(width: AppConstants.FloatingLayoutSettings.timerOnlyWidth,
                           height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
         case .imageOnly:
             return CGSize(width: AppConstants.FloatingLayoutSettings.width,

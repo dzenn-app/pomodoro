@@ -19,7 +19,7 @@ struct FloatingTimerView: View {
         Group {
             switch layoutMode {
             case .timerOnly:
-                timerContent(theme: theme)
+                timerOnlyContent(theme: theme)
                     .frame(height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
             case .imageOnly:
                 imageContent(theme: theme, imagePath: imagePath)
@@ -33,7 +33,7 @@ struct FloatingTimerView: View {
                 }
             }
         }
-        .frame(width: AppConstants.FloatingLayoutSettings.width)
+        .frame(width: layoutMode.contentSize.width)
         .background(panelBackground(theme: theme, opacity: clampedOpacity))
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .animation(.easeInOut(duration: 0.2), value: floatingOpacity)
@@ -43,6 +43,15 @@ struct FloatingTimerView: View {
         .onChange(of: layoutModeID) {
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
         }
+    }
+
+    private func timerOnlyContent(theme: FloatingTheme) -> some View {
+        Text(format(timer.remainingTime))
+            .font(.system(size: 30, weight: .bold, design: .rounded))
+            .foregroundColor(theme.textColor)
+            .monospacedDigit()
+            .padding(.horizontal, 2)
+            .padding(.vertical, 8)
     }
 
     private func timerContent(theme: FloatingTheme) -> some View {

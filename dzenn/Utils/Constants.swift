@@ -57,8 +57,9 @@ enum AppConstants {
         static let imageOffsetXKey = "floatingImageOffsetX"
         static let imageOffsetYKey = "floatingImageOffsetY"
         static let defaultImageOffset = 0.0
+        static let timerOnlyWidth: CGFloat = 110
         static let width: CGFloat = 260
-        static let timerOnlyHeight: CGFloat = 90
+        static let timerOnlyHeight: CGFloat = 62
         static let imageOnlyHeight: CGFloat = 200
         static let mixedHeight: CGFloat = 240
         static let mixedImageHeight: CGFloat = 150
