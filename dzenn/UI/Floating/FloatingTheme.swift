@@ -10,7 +10,7 @@ enum FloatingTheme: String, CaseIterable, Identifiable {
     }
 
     var backgroundColor: Color {
-        Color.black.opacity(0.85)
+        .black
     }
 
     var textColor: Color {
