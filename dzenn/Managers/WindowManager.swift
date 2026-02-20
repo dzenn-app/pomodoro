@@ -6,6 +6,10 @@ import SwiftUI
 final class WindowManager: ObservableObject {
     static let shared = WindowManager()
     let objectWillChange = ObservableObjectPublisher()
+
+    private enum MainWindowChrome {
+        static let trafficLightsVerticalOffset: CGFloat = -6
+    }
     
     var floatingWindow: NSWindow?
     var mainWindow: NSWindow?
@@ -101,8 +105,23 @@ final class WindowManager: ObservableObject {
 
         window.standardWindowButton(.miniaturizeButton)?.isEnabled = false
         window.standardWindowButton(.zoomButton)?.isEnabled = false
+        applyMainWindowTrafficLightsOffset(window)
+        DispatchQueue.main.async { [weak window] in
+            guard let window else { return }
+            self.applyMainWindowTrafficLightsOffset(window)
+        }
 
         return window
+    }
+
+    private func applyMainWindowTrafficLightsOffset(_ window: NSWindow) {
+        guard let closeButton = window.standardWindowButton(.closeButton),
+              let miniButton = window.standardWindowButton(.miniaturizeButton),
+              let zoomButton = window.standardWindowButton(.zoomButton) else { return }
+
+        closeButton.frame.origin.y += MainWindowChrome.trafficLightsVerticalOffset
+        miniButton.frame.origin.y += MainWindowChrome.trafficLightsVerticalOffset
+        zoomButton.frame.origin.y += MainWindowChrome.trafficLightsVerticalOffset
     }
 
     func updateFloatingSize(mode: FloatingLayoutMode) {

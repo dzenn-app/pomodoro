@@ -2,13 +2,23 @@ import SwiftUI
 
 struct MainView: View {
     @State private var selection: SidebarItem? = .general
+    private let columnBottomPadding: CGFloat = 6
+    private let outerSidePadding: CGFloat = 6
+    private let columnTopPadding: CGFloat = 6
+    private let titlebarInset: CGFloat = 36
 
     var body: some View {
         HStack(spacing: 2) {
             sidebarSection
+                .padding(.leading, outerSidePadding)
+                .padding(.top, columnTopPadding)
+                .padding(.bottom, columnBottomPadding)
+
             detailSection
+                .padding(.trailing, outerSidePadding)
+                .padding(.top, columnTopPadding)
+                .padding(.bottom, columnBottomPadding)
         }
-        .padding(2)
         .frame(minWidth: 720, minHeight: 480)
         .background(mainBackground.ignoresSafeArea())
         .ignoresSafeArea(.container, edges: .top)
@@ -17,7 +27,7 @@ struct MainView: View {
     private var sidebarSection: some View {
         VStack(spacing: 0) {
             Color.clear
-                .frame(height: 36)
+                .frame(height: titlebarInset)
 
             VStack(alignment: .leading, spacing: 6) {
                 ForEach(SidebarItem.allCases) { item in
@@ -33,13 +43,13 @@ struct MainView: View {
             .padding(10)
         }
         .frame(width: 220)
+        .frame(maxHeight: .infinity)
         .background(sidebarBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(Color.white.opacity(0.1), lineWidth: 1)
         )
-        .ignoresSafeArea(.container, edges: .top)
     }
 
     private var detailSection: some View {
