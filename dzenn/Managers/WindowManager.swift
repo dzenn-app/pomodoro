@@ -8,6 +8,7 @@ final class WindowManager: ObservableObject {
     let objectWillChange = ObservableObjectPublisher()
 
     private enum MainWindowChrome {
+        static let trafficLightsHorizontalOffset: CGFloat = 6
         static let trafficLightsVerticalOffset: CGFloat = -6
     }
     
@@ -105,7 +106,6 @@ final class WindowManager: ObservableObject {
 
         window.standardWindowButton(.miniaturizeButton)?.isEnabled = false
         window.standardWindowButton(.zoomButton)?.isEnabled = false
-        applyMainWindowTrafficLightsOffset(window)
         DispatchQueue.main.async { [weak window] in
             guard let window else { return }
             self.applyMainWindowTrafficLightsOffset(window)
@@ -118,6 +118,10 @@ final class WindowManager: ObservableObject {
         guard let closeButton = window.standardWindowButton(.closeButton),
               let miniButton = window.standardWindowButton(.miniaturizeButton),
               let zoomButton = window.standardWindowButton(.zoomButton) else { return }
+
+        closeButton.frame.origin.x += MainWindowChrome.trafficLightsHorizontalOffset
+        miniButton.frame.origin.x += MainWindowChrome.trafficLightsHorizontalOffset
+        zoomButton.frame.origin.x += MainWindowChrome.trafficLightsHorizontalOffset
 
         closeButton.frame.origin.y += MainWindowChrome.trafficLightsVerticalOffset
         miniButton.frame.origin.y += MainWindowChrome.trafficLightsVerticalOffset

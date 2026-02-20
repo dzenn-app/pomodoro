@@ -146,3 +146,18 @@ mainnya d file
 
 nnti baru dipanggil di 
 dzenn/UI/Main/FloatingAppSettingsView.swift (jdi disini g pelru dirubah)
+
+---
+# cara menaytukan sidebar + traffic light
+
+Goal:
+- Bikin traffic light bawaan macOS terlihat menyatu di dalam area sidebar (tanpa tombol custom), sambil tetap jaga behavior native.
+- Layout utama tetap 2 area visual: `sidebar` dan `detail`.
+
+Pendekatan:
+- Pakai `NSWindow` style `.fullSizeContentView`, lalu set `titlebarAppearsTransparent = true` dan `titleVisibility = .hidden` di `dzenn/Managers/WindowManager.swift`.
+- Biarkan traffic light tetap bawaan/native (close aktif, minimize + zoom disable), jangan ganti dengan SwiftUI custom.
+- Di `MainView`, root layout pakai `ignoresSafeArea(.container, edges: .top)` supaya background/sidebar bisa naik ke area title bar.
+- Sidebar diberi `titlebarInset` (spacer atas) untuk ruang tombol traffic light + navigation tetap rapi.
+- geser traffic light sedikit jika pelru pakai standardWindowButton frame dan trafficLightsHorizontalOffset
+- Padding universal konten diterapkan konsisten per kolom (left/right/top/bottom) agar border sidebar tetap kelihatan.
