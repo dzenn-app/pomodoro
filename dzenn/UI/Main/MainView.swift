@@ -1,18 +1,49 @@
-// UI/Main/MainView.swift
-
 import SwiftUI
 
 struct MainView: View {
     @State private var selection: SidebarItem? = .general
 
     var body: some View {
-        NavigationSplitView {
-            List(SidebarItem.allCases, selection: $selection) { item in
-                Label(item.title, systemImage: item.systemImage)
-                    .tag(item)
+        HStack(spacing: 2) {
+            sidebarSection
+            detailSection
+        }
+        .padding(2)
+        .frame(minWidth: 720, minHeight: 480)
+        .background(mainBackground.ignoresSafeArea())
+    }
+
+    private var sidebarSection: some View {
+        VStack(spacing: 0) {
+            WindowControlsBar()
+                .padding(.horizontal, 12)
+                .padding(.top, 10)
+                .padding(.bottom, 8)
+
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(SidebarItem.allCases) { item in
+                    SidebarRow(item: item, isSelected: selection == item)
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.16)) {
+                                selection = item
+                            }
+                        }
+                }
+                Spacer()
             }
-            .listStyle(.sidebar)
-        } detail: {
+            .padding(10)
+        }
+        .frame(width: 220)
+        .background(sidebarBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
+    }
+
+    private var detailSection: some View {
+        Group {
             switch selection ?? .general {
             case .general:
                 GeneralSettingsView()
@@ -20,41 +51,74 @@ struct MainView: View {
                 FloatingAppSettingsView()
             }
         }
-        .frame(minWidth: 700, minHeight: 450)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(mainBackground)
+    }
+
+    private var mainBackground: Color {
+        Color(red: 36 / 255, green: 36 / 255, blue: 36 / 255)
+    }
+
+    private var sidebarBackground: Color {
+        Color(red: 31 / 255, green: 31 / 255, blue: 31 / 255)
+    }
+}
+
+private struct SidebarRow: View {
+    let item: SidebarItem
+    let isSelected: Bool
+    
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: item.systemImage)
+                .font(.system(size: 14, weight: .medium))
+                .frame(width: 20)
+            
+            Text(item.title)
+                .font(.system(size: 13, weight: .regular))
+            
+            Spacer()
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .background(isSelected ? Color.white.opacity(0.1) : Color.clear)
+        .cornerRadius(8)
+        .contentShape(Rectangle())
+    }
+}
+
+private struct WindowControlsBar: View {
+    var body: some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(Color(red: 1.0, green: 0.37, blue: 0.33))
+                .frame(width: 12, height: 12)
+            Circle()
+                .fill(Color(red: 1.0, green: 0.74, blue: 0.18))
+                .frame(width: 12, height: 12)
+            Circle()
+                .fill(Color(red: 0.16, green: 0.81, blue: 0.29))
+                .frame(width: 12, height: 12)
+            Spacer()
+        }
     }
 }
 
 private enum SidebarItem: String, CaseIterable, Identifiable {
-    case general
-    case floatingApp
-
+    case general, floatingApp
     var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .general:
-            return "General"
-        case .floatingApp:
-            return "Floating App"
-        }
-    }
-
-    var systemImage: String {
-        switch self {
-        case .general:
-            return "gearshape"
-        case .floatingApp:
-            return "rectangle.on.rectangle"
-        }
-    }
+    var title: String { self == .general ? "General" : "Floating App" }
+    var systemImage: String { self == .general ? "gearshape" : "rectangle.on.rectangle" }
 }
 
 private struct GeneralSettingsView: View {
     var body: some View {
         VStack(spacing: 20) {
+            Text("General Settings Content") // Placeholder
+                .foregroundColor(.secondary)
             DurationSelectorView()
         }
-        .padding(.vertical, 24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
