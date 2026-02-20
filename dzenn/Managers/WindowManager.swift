@@ -86,16 +86,22 @@ final class WindowManager: ObservableObject {
     private func makeMainWindow() -> NSWindow {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 520, height: 420),
-            styleMask: [.titled, .closable, .resizable, .miniaturizable],
+            styleMask: [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
-        window.title = "Dzenn"
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.backgroundColor = NSColor(calibratedRed: 36 / 255, green: 36 / 255, blue: 36 / 255, alpha: 1)
         window.isReleasedWhenClosed = false
         window.isRestorable = false
         window.identifier = NSUserInterfaceItemIdentifier("DzennMainWindow")
         window.center()
         window.contentView = NSHostingView(rootView: MainView())
+
+        window.standardWindowButton(.miniaturizeButton)?.isEnabled = false
+        window.standardWindowButton(.zoomButton)?.isEnabled = false
+
         return window
     }
 

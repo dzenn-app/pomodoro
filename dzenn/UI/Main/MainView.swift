@@ -11,14 +11,13 @@ struct MainView: View {
         .padding(2)
         .frame(minWidth: 720, minHeight: 480)
         .background(mainBackground.ignoresSafeArea())
+        .ignoresSafeArea(.container, edges: .top)
     }
 
     private var sidebarSection: some View {
         VStack(spacing: 0) {
-            WindowControlsBar()
-                .padding(.horizontal, 12)
-                .padding(.top, 10)
-                .padding(.bottom, 8)
+            Color.clear
+                .frame(height: 36)
 
             VStack(alignment: .leading, spacing: 6) {
                 ForEach(SidebarItem.allCases) { item in
@@ -40,6 +39,7 @@ struct MainView: View {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(Color.white.opacity(0.1), lineWidth: 1)
         )
+        .ignoresSafeArea(.container, edges: .top)
     }
 
     private var detailSection: some View {
@@ -84,23 +84,6 @@ private struct SidebarRow: View {
         .background(isSelected ? Color.white.opacity(0.1) : Color.clear)
         .cornerRadius(8)
         .contentShape(Rectangle())
-    }
-}
-
-private struct WindowControlsBar: View {
-    var body: some View {
-        HStack(spacing: 8) {
-            Circle()
-                .fill(Color(red: 1.0, green: 0.37, blue: 0.33))
-                .frame(width: 12, height: 12)
-            Circle()
-                .fill(Color(red: 1.0, green: 0.74, blue: 0.18))
-                .frame(width: 12, height: 12)
-            Circle()
-                .fill(Color(red: 0.16, green: 0.81, blue: 0.29))
-                .frame(width: 12, height: 12)
-            Spacer()
-        }
     }
 }
 
