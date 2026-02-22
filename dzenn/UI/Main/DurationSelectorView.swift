@@ -51,18 +51,17 @@ struct DurationSelectorView: View {
                 HStack {
                     Text("Volume")
                     Spacer()
-                    HStack(spacing: 8) {
-                        Slider(
+                    HStack(spacing: 4) {
+                        Image(systemName: "speaker.wave.1")
+                            .foregroundColor(.secondary)
+                        CustomSlider(
                             value: $soundVolume,
-                            in: AppConstants.SoundSettings.minVolume...AppConstants.SoundSettings.maxVolume,
+                            range: AppConstants.SoundSettings.minVolume...AppConstants.SoundSettings.maxVolume,
                             step: 0.05
                         )
                         .frame(width: 180)
-
-                        Text("\(Int((soundVolume * 100).rounded()))%")
-                            .monospacedDigit()
+                        Image(systemName: "speaker.wave.3")
                             .foregroundColor(.secondary)
-                            .frame(width: 44, alignment: .trailing)
                     }
                 }
                 .padding(.bottom, 12)

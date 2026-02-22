@@ -58,11 +58,12 @@ struct FloatingAppSettingsView: View {
             Text("Opacity")
                 .frame(width: 60, alignment: .leading)
 
-            Slider(
+            CustomSlider(
                 value: $floatingOpacity,
-                in: AppConstants.FloatingThemeSettings.minOpacity...AppConstants.FloatingThemeSettings.maxOpacity,
+                range: AppConstants.FloatingThemeSettings.minOpacity...AppConstants.FloatingThemeSettings.maxOpacity,
                 step: 0.01
             )
+            .frame(width: 200)
 
             Text("\(Int((floatingOpacity * 100).rounded()))%")
                 .monospacedDigit()
