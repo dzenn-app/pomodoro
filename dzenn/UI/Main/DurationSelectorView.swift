@@ -11,18 +11,27 @@ struct DurationSelectorView: View {
     @AppStorage(AppConstants.SoundSettings.volumeKey) private var soundVolume: Double = AppConstants.SoundSettings.defaultVolume
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("General")
+                .font(.title2)
+                .fontWeight(.semibold)
+
             VStack(spacing: 12) {
                 Text("Quick Presets (minutes)")
                     .font(.title3)
                     .fontWeight(.semibold)
 
-                HStack(spacing: 12) {
-                    presetField(value: $quickPreset1)
-                    presetField(value: $quickPreset2)
-                    presetField(value: $quickPreset3)
+                HStack {
+                    Spacer()
+                    HStack(spacing: 12) {
+                        presetField(value: $quickPreset1)
+                        presetField(value: $quickPreset2)
+                        presetField(value: $quickPreset3)
+                    }
+                    Spacer()
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .center)
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Sound")
@@ -57,7 +66,8 @@ struct DurationSelectorView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(24)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 24)
         .onAppear {
             if !AppConstants.SoundSettings.options.contains(where: { $0.id == selectedSoundID }) {
                 selectedSoundID = AppConstants.SoundSettings.defaultSoundID

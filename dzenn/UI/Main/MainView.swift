@@ -107,11 +107,10 @@ private enum SidebarItem: String, CaseIterable, Identifiable {
 private struct GeneralSettingsView: View {
     var body: some View {
         VStack(spacing: 20) {
-            Text("General Settings Content") // Placeholder
-                .foregroundColor(.secondary)
+        
             DurationSelectorView()
         }
-        .padding(30)
+        .padding(2)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
