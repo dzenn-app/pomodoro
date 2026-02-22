@@ -34,35 +34,42 @@ struct DurationSelectorView: View {
             .frame(maxWidth: .infinity, alignment: .center)
 
             VStack(alignment: .leading, spacing: 10) {
-                Text("Sound")
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                HStack {
+                    Text("Completion Sound")
+                    Spacer()
+                    Picker("", selection: $selectedSoundID) {
+                        ForEach(AppConstants.SoundSettings.options) { option in
+                            Text(option.title).tag(option.id)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .frame(width: 200, alignment: .trailing)
+                }
 
-                Picker("Completion Sound", selection: $selectedSoundID) {
-                    ForEach(AppConstants.SoundSettings.options) { option in
-                        Text(option.title).tag(option.id)
+                HStack {
+                    Text("Volume")
+                    Spacer()
+                    HStack(spacing: 8) {
+                        Slider(
+                            value: $soundVolume,
+                            in: AppConstants.SoundSettings.minVolume...AppConstants.SoundSettings.maxVolume,
+                            step: 0.05
+                        )
+                        .frame(width: 180)
+
+                        Text("\(Int((soundVolume * 100).rounded()))%")
+                            .monospacedDigit()
+                            .foregroundColor(.secondary)
+                            .frame(width: 44, alignment: .trailing)
                     }
                 }
-                .pickerStyle(.menu)
-                .frame(maxWidth: 240, alignment: .leading)
 
-                HStack(spacing: 12) {
-                    Text("Volume")
-                        .frame(width: 60, alignment: .leading)
-
-                    Slider(
-                        value: $soundVolume,
-                        in: AppConstants.SoundSettings.minVolume...AppConstants.SoundSettings.maxVolume,
-                        step: 0.05
-                    )
-
-                    Text("\(Int((soundVolume * 100).rounded()))%")
-                        .monospacedDigit()
-                        .foregroundColor(.secondary)
-                        .frame(width: 44, alignment: .trailing)
+                HStack {
+                    Text("Automatically mute after 5 seconds")
+                    Spacer()
+                    Toggle("", isOn: $autoMuteAfter5Seconds)
+                        .toggleStyle(.switch)
                 }
-
-                Toggle("Automatically mute after 5 seconds", isOn: $autoMuteAfter5Seconds)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
