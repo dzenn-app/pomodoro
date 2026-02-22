@@ -89,9 +89,10 @@ final class WindowManager: ObservableObject {
     }
 
     private func makeMainWindow() -> NSWindow {
+        let fixedSize = NSSize(width: 520, height: 420)
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 520, height: 420),
-            styleMask: [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView],
+            contentRect: NSRect(x: 0, y: 0, width: fixedSize.width, height: fixedSize.height),
+            styleMask: [.titled, .closable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
@@ -101,6 +102,8 @@ final class WindowManager: ObservableObject {
         window.isReleasedWhenClosed = false
         window.isRestorable = false
         window.identifier = NSUserInterfaceItemIdentifier("DzennMainWindow")
+        window.minSize = fixedSize
+        window.maxSize = fixedSize
         window.center()
         window.contentView = NSHostingView(rootView: MainView())
 
