@@ -31,9 +31,10 @@ struct DurationSelectorView: View {
                     Spacer()
                 }
             }
+            .padding(.bottom, 16)
             .frame(maxWidth: .infinity, alignment: .center)
 
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Text("Completion Sound")
                     Spacer()
@@ -45,6 +46,7 @@ struct DurationSelectorView: View {
                     .pickerStyle(.menu)
                     .frame(width: 200, alignment: .trailing)
                 }
+                .padding(.bottom, 12)
 
                 HStack {
                     Text("Volume")
@@ -63,6 +65,7 @@ struct DurationSelectorView: View {
                             .frame(width: 44, alignment: .trailing)
                     }
                 }
+                .padding(.bottom, 12)
 
                 HStack {
                     Text("Automatically mute after 5 seconds")
