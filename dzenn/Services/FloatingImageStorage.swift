@@ -22,7 +22,7 @@ final class FloatingImageStorage {
     }
 
     func removeImage(atPath path: String) {
-        guard isAppSupportImagePath(path) else { return }
+        guard self.isAppSupportImagePath(path) else { return }
         try? FileManager.default.removeItem(atPath: path)
     }
 

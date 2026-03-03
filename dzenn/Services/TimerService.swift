@@ -1,9 +1,8 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class TimerService: ObservableObject {
-
     @Published var remainingTime: TimeInterval = 0
     @Published var isRunning: Bool = false
     @Published private(set) var isPaused: Bool = false
@@ -12,17 +11,17 @@ final class TimerService: ObservableObject {
     private var endTime: Date?
 
     private func cancelTimer() {
-        timer?.cancel()
-        timer = nil
+        self.timer?.cancel()
+        self.timer = nil
     }
 
     func start(duration: TimeInterval) {
-        cancelTimer()
+        self.cancelTimer()
 
-        remainingTime = duration
-        endTime = Date().addingTimeInterval(duration)
-        isRunning = true
-        isPaused = false
+        self.remainingTime = duration
+        self.endTime = Date().addingTimeInterval(duration)
+        self.isRunning = true
+        self.isPaused = false
 
         let timer = DispatchSource.makeTimerSource(queue: .main)
         timer.schedule(deadline: .now(), repeating: 1)
@@ -45,26 +44,26 @@ final class TimerService: ObservableObject {
     }
 
     func stop() {
-        cancelTimer()
-        endTime = nil
-        isRunning = false
-        isPaused = false
-        remainingTime = 0
+        self.cancelTimer()
+        self.endTime = nil
+        self.isRunning = false
+        self.isPaused = false
+        self.remainingTime = 0
     }
 
     func pause() {
-        guard isRunning, let endTime else { return }
+        guard self.isRunning, let endTime else { return }
 
         let now = Date()
-        remainingTime = max(0, endTime.timeIntervalSince(now))
-        cancelTimer()
+        self.remainingTime = max(0, endTime.timeIntervalSince(now))
+        self.cancelTimer()
         self.endTime = nil
-        isRunning = false
-        isPaused = true
+        self.isRunning = false
+        self.isPaused = true
     }
 
     func resume() {
-        guard isPaused, remainingTime > 0 else { return }
-        start(duration: remainingTime)
+        guard self.isPaused, self.remainingTime > 0 else { return }
+        self.start(duration: self.remainingTime)
     }
 }

@@ -5,30 +5,35 @@ enum FloatingLayoutMode: String, CaseIterable, Identifiable {
     case imageOnly
     case mixed
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var title: String {
         switch self {
         case .timerOnly:
-            return "Timer Only"
+            "Timer Only"
         case .imageOnly:
-            return "Image Only"
+            "Image Only"
         case .mixed:
-            return "Mixed"
+            "Mixed"
         }
     }
 
     var contentSize: CGSize {
         switch self {
         case .timerOnly:
-            return CGSize(width: AppConstants.FloatingLayoutSettings.timerOnlyWidth,
-                          height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
+            CGSize(
+                width: AppConstants.FloatingLayoutSettings.timerOnlyWidth,
+                height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
         case .imageOnly:
-            return CGSize(width: AppConstants.FloatingLayoutSettings.width,
-                          height: AppConstants.FloatingLayoutSettings.imageOnlyHeight)
+            CGSize(
+                width: AppConstants.FloatingLayoutSettings.width,
+                height: AppConstants.FloatingLayoutSettings.imageOnlyHeight)
         case .mixed:
-            return CGSize(width: AppConstants.FloatingLayoutSettings.width,
-                          height: AppConstants.FloatingLayoutSettings.mixedHeight)
+            CGSize(
+                width: AppConstants.FloatingLayoutSettings.width,
+                height: AppConstants.FloatingLayoutSettings.mixedHeight)
         }
     }
 

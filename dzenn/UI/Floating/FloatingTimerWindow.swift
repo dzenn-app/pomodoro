@@ -2,7 +2,7 @@ import SwiftUI
 
 struct FloatingTimerView: View {
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
-    
+
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey)
     private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
     @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey)
@@ -15,41 +15,42 @@ struct FloatingTimerView: View {
 
     var body: some View {
         let theme: FloatingTheme = .black
-        let clampedOpacity = min(AppConstants.FloatingThemeSettings.maxOpacity,
-                                 max(AppConstants.FloatingThemeSettings.minOpacity, floatingOpacity))
-        let layoutMode = FloatingLayoutMode.from(id: layoutModeID)
+        let clampedOpacity = min(
+            AppConstants.FloatingThemeSettings.maxOpacity,
+            max(AppConstants.FloatingThemeSettings.minOpacity, self.floatingOpacity))
+        let layoutMode = FloatingLayoutMode.from(id: self.layoutModeID)
 
         Group {
             switch layoutMode {
             case .timerOnly:
-                timerOnlyContent(theme: theme)
+                self.timerOnlyContent(theme: theme)
                     .frame(height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
             case .imageOnly:
-                imageContent(theme: theme, imagePath: imagePath)
+                self.imageContent(theme: theme, imagePath: self.imagePath)
                     .frame(height: AppConstants.FloatingLayoutSettings.imageOnlyHeight)
             case .mixed:
                 VStack(spacing: 0) {
-                    imageContent(theme: theme, imagePath: imagePath)
+                    self.imageContent(theme: theme, imagePath: self.imagePath)
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedImageHeight)
-                    timerContent(theme: theme)
+                    self.timerContent(theme: theme)
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedTimerHeight)
                 }
             }
         }
         .frame(width: layoutMode.contentSize.width)
-        .background(panelBackground(theme: theme, opacity: clampedOpacity))
+        .background(self.panelBackground(theme: theme, opacity: clampedOpacity))
         .clipShape(RoundedRectangle(cornerRadius: 18))
-        .animation(.easeInOut(duration: 0.2), value: floatingOpacity)
+        .animation(.easeInOut(duration: 0.2), value: self.floatingOpacity)
         .onAppear {
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
         }
-        .onChange(of: layoutModeID) {
+        .onChange(of: self.layoutModeID) {
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
         }
     }
 
     private func timerOnlyContent(theme: FloatingTheme) -> some View {
-        Text(format(timer.remainingTime))
+        Text(self.format(self.timer.remainingTime))
             .font(.system(size: 30, weight: .bold, design: .rounded))
             .foregroundColor(theme.textColor)
             .monospacedDigit()
@@ -60,7 +61,7 @@ struct FloatingTimerView: View {
     private func timerContent(theme: FloatingTheme) -> some View {
         HStack {
             Spacer()
-            Text(format(timer.remainingTime))
+            Text(self.format(self.timer.remainingTime))
                 .font(.system(size: 26, weight: .bold, design: .rounded))
                 .foregroundColor(theme.textColor)
                 .monospacedDigit()
@@ -81,12 +82,11 @@ struct FloatingTimerView: View {
                 GeometryReader { proxy in
                     let containerSize = proxy.size
                     let normalizedOffset =
-                        FloatingImageFraming.clampedNormalizedOffset(x: imageOffsetX, y: imageOffsetY)
+                        FloatingImageFraming.clampedNormalizedOffset(x: self.imageOffsetX, y: self.imageOffsetY)
                     let imageOffset = FloatingImageFraming.offset(
                         fromNormalized: normalizedOffset,
                         imageSize: image.size,
-                        containerSize: containerSize
-                    )
+                        containerSize: containerSize)
 
                     Image(nsImage: image)
                         .resizable()
@@ -113,8 +113,7 @@ struct FloatingTimerView: View {
             .fill(theme.backgroundColor.opacity(opacity))
             .overlay(
                 panelShape
-                    .stroke(theme.borderColor, lineWidth: 1)
-            )
+                    .stroke(theme.borderColor, lineWidth: 1))
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 

@@ -12,8 +12,8 @@ struct FocusSession: Identifiable, Equatable {
         task: String,
         type: SessionType,
         startTime: Date = Date(),
-        endTime: Date? = nil
-    ) {
+        endTime: Date? = nil)
+    {
         self.id = id
         self.task = task
         self.type = type

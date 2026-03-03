@@ -12,8 +12,8 @@ enum BreakType: String, Equatable {
 
     var title: String {
         switch self {
-        case .short: return "Short Break"
-        case .long: return "Long Break"
+        case .short: "Short Break"
+        case .long: "Long Break"
         }
     }
 }

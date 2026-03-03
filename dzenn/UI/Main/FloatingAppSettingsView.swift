@@ -21,9 +21,9 @@ struct FloatingAppSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                appearanceSection
+                self.appearanceSection
                 Divider()
-                imageSection
+                self.imageSection
             }
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -32,18 +32,18 @@ struct FloatingAppSettingsView: View {
         .scrollContentBackground(.hidden)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .onAppear {
-            floatingOpacity = clampOpacity(floatingOpacity)
-            syncDraftOffsetsFromApplied()
-            updateLayoutMode()
+            self.floatingOpacity = self.clampOpacity(self.floatingOpacity)
+            self.syncDraftOffsetsFromApplied()
+            self.updateLayoutMode()
         }
-        .onChange(of: floatingOpacity) {
-            floatingOpacity = clampOpacity(floatingOpacity)
+        .onChange(of: self.floatingOpacity) {
+            self.floatingOpacity = self.clampOpacity(self.floatingOpacity)
         }
-        .onChange(of: imagePath) {
-            updateLayoutMode()
+        .onChange(of: self.imagePath) {
+            self.updateLayoutMode()
         }
-        .onChange(of: showTimerOnImage) {
-            updateLayoutMode()
+        .onChange(of: self.showTimerOnImage) {
+            self.updateLayoutMode()
         }
     }
 
@@ -55,7 +55,7 @@ struct FloatingAppSettingsView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
 
-            opacityRow
+            self.opacityRow
         }
     }
 
@@ -68,13 +68,12 @@ struct FloatingAppSettingsView: View {
             let maxOpacity = AppConstants.FloatingThemeSettings.maxOpacity
             let opacityRange = minOpacity...maxOpacity
             CustomSlider(
-                value: $floatingOpacity,
+                value: self.$floatingOpacity,
                 range: opacityRange,
-                step: 0.01
-            )
-            .frame(width: 200)
+                step: 0.01)
+                .frame(width: 200)
 
-            Text("\(Int((floatingOpacity * 100).rounded()))%")
+            Text("\(Int((self.floatingOpacity * 100).rounded()))%")
                 .monospacedDigit()
                 .foregroundColor(.secondary)
                 .frame(width: 44, alignment: .trailing)
@@ -82,7 +81,7 @@ struct FloatingAppSettingsView: View {
     }
 
     private var imageSection: some View {
-        let hasSelectedImage = !imagePath.isEmpty
+        let hasSelectedImage = !self.imagePath.isEmpty
 
         return VStack(alignment: .leading, spacing: 10) {
             Text("Floating Image")
@@ -91,27 +90,26 @@ struct FloatingAppSettingsView: View {
 
             HStack(spacing: 12) {
                 Button("Choose Image...") {
-                    pickImage()
+                    self.pickImage()
                 }
                 Button("Remove Image") {
-                    removeStoredImage()
+                    self.removeStoredImage()
                 }
                 .disabled(!hasSelectedImage)
             }
 
             Text(
                 hasSelectedImage
-                    ? URL(fileURLWithPath: imagePath).lastPathComponent
-                    : "No image selected"
-            )
+                    ? URL(fileURLWithPath: self.imagePath).lastPathComponent
+                    : "No image selected")
                 .font(.caption)
                 .foregroundColor(.secondary)
 
-            Toggle("Show timer on top of image", isOn: $showTimerOnImage)
+            Toggle("Show timer on top of image", isOn: self.$showTimerOnImage)
                 .disabled(!hasSelectedImage)
 
             if let image = loadImage(path: imagePath) {
-                imagePositioningSection(image: image)
+                self.imagePositioningSection(image: image)
             }
         }
     }
@@ -123,21 +121,20 @@ struct FloatingAppSettingsView: View {
 
             FloatingImagePositioningPreview(
                 image: image,
-                previewAspectRatio: previewAspectRatio,
-                offsetX: $draftImageOffsetX,
-                offsetY: $draftImageOffsetY
-            )
+                previewAspectRatio: self.previewAspectRatio,
+                offsetX: self.$draftImageOffsetX,
+                offsetY: self.$draftImageOffsetY)
 
             HStack(spacing: 12) {
                 Button("Apply Position") {
-                    applyDraftPosition()
+                    self.applyDraftPosition()
                 }
-                .disabled(!hasPendingPositionChanges)
+                .disabled(!self.hasPendingPositionChanges)
 
                 Button("Reset") {
-                    resetDraftPosition()
+                    self.resetDraftPosition()
                 }
-                .disabled(!hasDraftPosition)
+                .disabled(!self.hasDraftPosition)
             }
 
             Text("Floating panel keeps the last applied position until you press Apply Position.")
@@ -148,24 +145,26 @@ struct FloatingAppSettingsView: View {
     }
 
     private var previewAspectRatio: CGFloat {
-        AppConstants.FloatingLayoutSettings.width / previewImageHeight
+        AppConstants.FloatingLayoutSettings.width / self.previewImageHeight
     }
 
     private var previewImageHeight: CGFloat {
-        showTimerOnImage ? AppConstants.FloatingLayoutSettings.mixedImageHeight : AppConstants.FloatingLayoutSettings.imageOnlyHeight
+        self.showTimerOnImage ? AppConstants.FloatingLayoutSettings.mixedImageHeight : AppConstants
+            .FloatingLayoutSettings.imageOnlyHeight
     }
 
     private var hasPendingPositionChanges: Bool {
-        abs(draftImageOffsetX - appliedImageOffsetX) > 0.001
-            || abs(draftImageOffsetY - appliedImageOffsetY) > 0.001
+        abs(self.draftImageOffsetX - self.appliedImageOffsetX) > 0.001
+            || abs(self.draftImageOffsetY - self.appliedImageOffsetY) > 0.001
     }
 
     private var hasDraftPosition: Bool {
-        abs(draftImageOffsetX) > 0.001 || abs(draftImageOffsetY) > 0.001
+        abs(self.draftImageOffsetX) > 0.001 || abs(self.draftImageOffsetY) > 0.001
     }
 
     private func clampOpacity(_ value: Double) -> Double {
-        min(AppConstants.FloatingThemeSettings.maxOpacity,
+        min(
+            AppConstants.FloatingThemeSettings.maxOpacity,
             max(AppConstants.FloatingThemeSettings.minOpacity, value))
     }
 
@@ -174,37 +173,36 @@ struct FloatingAppSettingsView: View {
     }
 
     private func syncDraftOffsetsFromApplied() {
-        draftImageOffsetX = clampNormalized(appliedImageOffsetX)
-        draftImageOffsetY = clampNormalized(appliedImageOffsetY)
+        self.draftImageOffsetX = self.clampNormalized(self.appliedImageOffsetX)
+        self.draftImageOffsetY = self.clampNormalized(self.appliedImageOffsetY)
     }
 
     private func applyDraftPosition() {
-        appliedImageOffsetX = clampNormalized(draftImageOffsetX)
-        appliedImageOffsetY = clampNormalized(draftImageOffsetY)
+        self.appliedImageOffsetX = self.clampNormalized(self.draftImageOffsetX)
+        self.appliedImageOffsetY = self.clampNormalized(self.draftImageOffsetY)
     }
 
     private func resetDraftPosition() {
-        draftImageOffsetX = AppConstants.FloatingLayoutSettings.defaultImageOffset
-        draftImageOffsetY = AppConstants.FloatingLayoutSettings.defaultImageOffset
+        self.draftImageOffsetX = AppConstants.FloatingLayoutSettings.defaultImageOffset
+        self.draftImageOffsetY = AppConstants.FloatingLayoutSettings.defaultImageOffset
     }
 
     private func resetAppliedPosition() {
-        appliedImageOffsetX = AppConstants.FloatingLayoutSettings.defaultImageOffset
-        appliedImageOffsetY = AppConstants.FloatingLayoutSettings.defaultImageOffset
-        resetDraftPosition()
+        self.appliedImageOffsetX = AppConstants.FloatingLayoutSettings.defaultImageOffset
+        self.appliedImageOffsetY = AppConstants.FloatingLayoutSettings.defaultImageOffset
+        self.resetDraftPosition()
     }
 
     private func updateLayoutMode() {
-        let nextLayoutID: String
-        if imagePath.isEmpty {
-            nextLayoutID = AppConstants.FloatingLayoutSettings.defaultLayoutID
+        let nextLayoutID: String = if self.imagePath.isEmpty {
+            AppConstants.FloatingLayoutSettings.defaultLayoutID
         } else {
-            nextLayoutID = showTimerOnImage ? FloatingLayoutMode.mixed.id : FloatingLayoutMode.imageOnly.id
+            self.showTimerOnImage ? FloatingLayoutMode.mixed.id : FloatingLayoutMode.imageOnly.id
         }
 
-        guard layoutModeID != nextLayoutID else { return }
+        guard self.layoutModeID != nextLayoutID else { return }
         withAnimation(.easeInOut(duration: 0.2)) {
-            layoutModeID = nextLayoutID
+            self.layoutModeID = nextLayoutID
         }
     }
 
@@ -212,20 +210,20 @@ struct FloatingAppSettingsView: View {
         FloatingImagePicker.pickImage { url in
             guard let url else { return }
             if let storedPath = FloatingImageStorage.shared.storeImage(from: url) {
-                imagePath = storedPath
+                self.imagePath = storedPath
             } else {
-                imagePath = url.path
+                self.imagePath = url.path
             }
-            showTimerOnImage = true
-            resetAppliedPosition()
+            self.showTimerOnImage = true
+            self.resetAppliedPosition()
         }
     }
 
     private func removeStoredImage() {
-        FloatingImageStorage.shared.removeImage(atPath: imagePath)
-        imagePath = ""
-        showTimerOnImage = true
-        resetAppliedPosition()
+        FloatingImageStorage.shared.removeImage(atPath: self.imagePath)
+        self.imagePath = ""
+        self.showTimerOnImage = true
+        self.resetAppliedPosition()
     }
 
     private func loadImage(path: String) -> NSImage? {
@@ -247,17 +245,18 @@ private struct FloatingImagePositioningPreview: View {
 
     var body: some View {
         GeometryReader { _ in
-            let containerSize = CGSize(width: previewWidth, height: previewWidth / previewAspectRatio)
-            let normalizedOffset = FloatingImageFraming.clampedNormalizedOffset(x: offsetX, y: offsetY)
-            let imageOffset = FloatingImageFraming.offset(fromNormalized: normalizedOffset,
-                                                          imageSize: image.size,
-                                                          containerSize: containerSize)
+            let containerSize = CGSize(width: previewWidth, height: previewWidth / self.previewAspectRatio)
+            let normalizedOffset = FloatingImageFraming.clampedNormalizedOffset(x: self.offsetX, y: self.offsetY)
+            let imageOffset = FloatingImageFraming.offset(
+                fromNormalized: normalizedOffset,
+                imageSize: self.image.size,
+                containerSize: containerSize)
 
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.gray.opacity(0.15))
 
-                Image(nsImage: image)
+                Image(nsImage: self.image)
                     .resizable()
                     .scaledToFill()
                     .frame(width: containerSize.width, height: containerSize.height)
@@ -287,25 +286,29 @@ private struct FloatingImagePositioningPreview: View {
                         guard let dragStartOffset else { return }
 
                         let start = dragStartOffset
-                        let next = CGSize(width: start.width + value.translation.width,
-                                          height: start.height + value.translation.height)
+                        let next = CGSize(
+                            width: start.width + value.translation.width,
+                            height: start.height + value.translation.height)
 
-                        let limits = FloatingImageFraming.maxOffset(imageSize: image.size, containerSize: containerSize)
-                        let clamped = CGSize(width: min(max(next.width, -limits.width), limits.width),
-                                             height: min(max(next.height, -limits.height), limits.height))
+                        let limits = FloatingImageFraming.maxOffset(
+                            imageSize: self.image.size,
+                            containerSize: containerSize)
+                        let clamped = CGSize(
+                            width: min(max(next.width, -limits.width), limits.width),
+                            height: min(max(next.height, -limits.height), limits.height))
 
-                        let normalized = FloatingImageFraming.normalized(fromOffset: clamped,
-                                                                         imageSize: image.size,
-                                                                         containerSize: containerSize)
-                        offsetX = normalized.width
-                        offsetY = normalized.height
+                        let normalized = FloatingImageFraming.normalized(
+                            fromOffset: clamped,
+                            imageSize: self.image.size,
+                            containerSize: containerSize)
+                        self.offsetX = normalized.width
+                        self.offsetY = normalized.height
                     }
                     .onEnded { _ in
-                        dragStartOffset = nil
-                    }
-            )
+                        self.dragStartOffset = nil
+                    })
         }
-        .frame(width: previewWidth, height: previewWidth / previewAspectRatio)
+        .frame(width: self.previewWidth, height: self.previewWidth / self.previewAspectRatio)
     }
 }
 

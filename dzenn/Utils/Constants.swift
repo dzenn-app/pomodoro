@@ -36,7 +36,7 @@ enum AppConstants {
         static let options: [SoundOption] = [
             SoundOption(id: "alarm-1", title: "Alarm 1", fileName: "alarm-1", fileExtension: "m4a"),
             SoundOption(id: "alarm-2", title: "Alarm 2", fileName: "alarm-2", fileExtension: "m4a"),
-            SoundOption(id: "alarm-3", title: "Alarm 3", fileName: "alarm-3", fileExtension: "m4a")
+            SoundOption(id: "alarm-3", title: "Alarm 3", fileName: "alarm-3", fileExtension: "m4a"),
         ]
     }
 

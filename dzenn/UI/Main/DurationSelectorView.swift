@@ -30,9 +30,9 @@ struct DurationSelectorView: View {
                 HStack {
                     Spacer()
                     HStack(spacing: 12) {
-                        presetField(value: $quickPreset1)
-                        presetField(value: $quickPreset2)
-                        presetField(value: $quickPreset3)
+                        self.presetField(value: self.$quickPreset1)
+                        self.presetField(value: self.$quickPreset2)
+                        self.presetField(value: self.$quickPreset3)
                     }
                     Spacer()
                 }
@@ -44,7 +44,7 @@ struct DurationSelectorView: View {
                 HStack {
                     Text("Completion Sound")
                     Spacer()
-                    Picker("", selection: $selectedSoundID) {
+                    Picker("", selection: self.$selectedSoundID) {
                         ForEach(AppConstants.SoundSettings.options) { option in
                             Text(option.title).tag(option.id)
                         }
@@ -61,11 +61,10 @@ struct DurationSelectorView: View {
                         Image(systemName: "speaker.wave.1")
                             .foregroundColor(.secondary)
                         CustomSlider(
-                            value: $soundVolume,
+                            value: self.$soundVolume,
                             range: AppConstants.SoundSettings.minVolume...AppConstants.SoundSettings.maxVolume,
-                            step: 0.05
-                        )
-                        .frame(width: 180)
+                            step: 0.05)
+                            .frame(width: 180)
                         Image(systemName: "speaker.wave.3")
                             .foregroundColor(.secondary)
                     }
@@ -75,7 +74,7 @@ struct DurationSelectorView: View {
                 HStack {
                     Text("Automatically mute after 5 seconds")
                     Spacer()
-                    Toggle("", isOn: $autoMuteAfter5Seconds)
+                    Toggle("", isOn: self.$autoMuteAfter5Seconds)
                         .toggleStyle(.switch)
                 }
             }
@@ -85,21 +84,21 @@ struct DurationSelectorView: View {
         .padding(.bottom, 24)
         .onAppear {
             if !AppConstants.SoundSettings.options.contains(where: { $0.id == selectedSoundID }) {
-                selectedSoundID = AppConstants.SoundSettings.defaultSoundID
+                self.selectedSoundID = AppConstants.SoundSettings.defaultSoundID
             }
-            soundVolume = clampVolume(soundVolume)
+            self.soundVolume = self.clampVolume(self.soundVolume)
         }
-        .onChange(of: quickPreset1) {
-            quickPreset1 = clampPreset(quickPreset1)
+        .onChange(of: self.quickPreset1) {
+            self.quickPreset1 = self.clampPreset(self.quickPreset1)
         }
-        .onChange(of: quickPreset2) {
-            quickPreset2 = clampPreset(quickPreset2)
+        .onChange(of: self.quickPreset2) {
+            self.quickPreset2 = self.clampPreset(self.quickPreset2)
         }
-        .onChange(of: quickPreset3) {
-            quickPreset3 = clampPreset(quickPreset3)
+        .onChange(of: self.quickPreset3) {
+            self.quickPreset3 = self.clampPreset(self.quickPreset3)
         }
-        .onChange(of: soundVolume) {
-            soundVolume = clampVolume(soundVolume)
+        .onChange(of: self.soundVolume) {
+            self.soundVolume = self.clampVolume(self.soundVolume)
         }
     }
 

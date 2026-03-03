@@ -126,6 +126,30 @@
 
 ---
 
+# Release & Distribution (Public)
+
+63. Pastikan `Bundle Identifier` final (reverse domain) ✅/❌
+64. Pastikan `Version` + `Build` (CFBundleShortVersionString + CFBundleVersion) ✅/❌
+65. Pastikan entitlements (Sandbox, Hardened Runtime, iCloud? etc) ✅/❌
+66. Siapkan Apple Developer Program + certs (Developer ID Application + Installer) ✅/❌
+67. Archive build via Xcode (Release) ✅/❌
+68. Notarize build (Xcode Organizer / `notarytool`) ✅/❌
+69. Staple notarization ticket ke app ✅/❌
+70. Buat paket distribusi (pilih salah satu) ✅/❌
+71. Opsi A: `.dmg` (paling umum) ✅/❌
+72. Opsi B: `.pkg` (installer) ✅/❌
+73. Test install di Mac lain (fresh user) ✅/❌
+74. Siapkan halaman download + release notes ✅/❌
+75. (Optional) Auto‑update via Sparkle ✅/❌
+
+Notes:
+- Tanpa auto‑update, user harus download versi baru manual.
+- Versi lama **tetap bisa jalan** selama tidak ada dependency server yang memaksa upgrade.
+- Jika pakai Sparkle, kamu bisa pilih `soft update` (rekomendasi)
+- `forced update` hanya jika benar‑benar perlu
+
+---
+
 # ILMU BARU 
 - Cara add sound ke project
 > setelh sound ada d folder, buka file inspector (⌥ + ⌘ + 1)

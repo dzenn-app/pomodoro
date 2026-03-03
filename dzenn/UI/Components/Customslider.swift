@@ -7,8 +7,8 @@ struct CustomSlider: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let clampedValue = clampValue(value)
-            let progress = (clampedValue - range.lowerBound) / (range.upperBound - range.lowerBound)
+            let clampedValue = self.clampValue(self.value)
+            let progress = (clampedValue - self.range.lowerBound) / (self.range.upperBound - self.range.lowerBound)
 
             ZStack(alignment: .leading) {
                 // 1. Track (Bagian belakang slider)
@@ -33,27 +33,26 @@ struct CustomSlider: View {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { gesture in
-                        updateValue(with: gesture.location.x, in: geometry.size.width)
-                    }
-            )
+                        self.updateValue(with: gesture.location.x, in: geometry.size.width)
+                    })
         }
         .frame(height: 20)
     }
 
     private func updateValue(with xLocation: CGFloat, in totalWidth: CGFloat) {
         let percentage = max(0, min(1, xLocation / totalWidth))
-        let newValue = range.lowerBound + (percentage * (range.upperBound - range.lowerBound))
-        value = applyStep(newValue)
+        let newValue = self.range.lowerBound + (percentage * (self.range.upperBound - self.range.lowerBound))
+        self.value = self.applyStep(newValue)
     }
 
     private func clampValue(_ input: Double) -> Double {
-        min(range.upperBound, max(range.lowerBound, input))
+        min(self.range.upperBound, max(self.range.lowerBound, input))
     }
 
     private func applyStep(_ input: Double) -> Double {
-        guard let step else { return clampValue(input) }
-        let steps = (input - range.lowerBound) / step
-        let rounded = (steps).rounded() * step + range.lowerBound
-        return clampValue(rounded)
+        guard let step else { return self.clampValue(input) }
+        let steps = (input - self.range.lowerBound) / step
+        let rounded = steps.rounded() * step + self.range.lowerBound
+        return self.clampValue(rounded)
     }
 }

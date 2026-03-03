@@ -3,7 +3,9 @@ import SwiftUI
 enum FloatingTheme: String, CaseIterable, Identifiable {
     case black
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var title: String {
         "Black"

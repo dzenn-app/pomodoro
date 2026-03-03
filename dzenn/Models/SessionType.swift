@@ -4,12 +4,14 @@ enum SessionType: String, CaseIterable, Identifiable {
     case focus
     case `break`
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var title: String {
         switch self {
-        case .focus: return "Focus Session"
-        case .break: return "Break Session"
+        case .focus: "Focus Session"
+        case .break: "Break Session"
         }
     }
 }

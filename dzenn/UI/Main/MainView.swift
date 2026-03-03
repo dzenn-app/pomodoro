@@ -9,32 +9,32 @@ struct MainView: View {
 
     var body: some View {
         HStack(spacing: 2) {
-            sidebarSection
-                .padding(.leading, outerSidePadding)
-                .padding(.top, columnTopPadding)
-                .padding(.bottom, columnBottomPadding)
+            self.sidebarSection
+                .padding(.leading, self.outerSidePadding)
+                .padding(.top, self.columnTopPadding)
+                .padding(.bottom, self.columnBottomPadding)
 
-            detailSection
-                .padding(.trailing, outerSidePadding)
-                .padding(.top, columnTopPadding)
-                .padding(.bottom, columnBottomPadding)
+            self.detailSection
+                .padding(.trailing, self.outerSidePadding)
+                .padding(.top, self.columnTopPadding)
+                .padding(.bottom, self.columnBottomPadding)
         }
         .frame(minWidth: 720, minHeight: 480)
-        .background(mainBackground.ignoresSafeArea())
+        .background(self.mainBackground.ignoresSafeArea())
         .ignoresSafeArea(.container, edges: .top)
     }
 
     private var sidebarSection: some View {
         VStack(spacing: 0) {
             Color.clear
-                .frame(height: titlebarInset)
+                .frame(height: self.titlebarInset)
 
             VStack(alignment: .leading, spacing: 6) {
                 ForEach(SidebarItem.allCases) { item in
-                    SidebarRow(item: item, isSelected: selection == item)
+                    SidebarRow(item: item, isSelected: self.selection == item)
                         .onTapGesture {
                             withAnimation(.easeInOut(duration: 0.16)) {
-                                selection = item
+                                self.selection = item
                             }
                         }
                 }
@@ -44,17 +44,16 @@ struct MainView: View {
         }
         .frame(width: 220)
         .frame(maxHeight: .infinity)
-        .background(sidebarBackground)
+        .background(self.sidebarBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
+                .stroke(Color.white.opacity(0.1), lineWidth: 1))
     }
 
     private var detailSection: some View {
         Group {
-            switch selection ?? .general {
+            switch self.selection ?? .general {
             case .general:
                 GeneralSettingsView()
             case .floatingApp:
@@ -62,7 +61,7 @@ struct MainView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(mainBackground)
+        .background(self.mainBackground)
     }
 
     private var mainBackground: Color {
@@ -77,21 +76,21 @@ struct MainView: View {
 private struct SidebarRow: View {
     let item: SidebarItem
     let isSelected: Bool
-    
+
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: item.systemImage)
+            Image(systemName: self.item.systemImage)
                 .font(.system(size: 14, weight: .medium))
                 .frame(width: 20)
-            
-            Text(item.title)
+
+            Text(self.item.title)
                 .font(.system(size: 13, weight: .regular))
-            
+
             Spacer()
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
-        .background(isSelected ? Color.white.opacity(0.1) : Color.clear)
+        .background(self.isSelected ? Color.white.opacity(0.1) : Color.clear)
         .cornerRadius(8)
         .contentShape(Rectangle())
     }
@@ -99,15 +98,22 @@ private struct SidebarRow: View {
 
 private enum SidebarItem: String, CaseIterable, Identifiable {
     case general, floatingApp
-    var id: String { rawValue }
-    var title: String { self == .general ? "General" : "Floating App" }
-    var systemImage: String { self == .general ? "gearshape" : "rectangle.on.rectangle" }
+    var id: String {
+        rawValue
+    }
+
+    var title: String {
+        self == .general ? "General" : "Floating App"
+    }
+
+    var systemImage: String {
+        self == .general ? "gearshape" : "rectangle.on.rectangle"
+    }
 }
 
 private struct GeneralSettingsView: View {
     var body: some View {
         VStack(spacing: 20) {
-        
             DurationSelectorView()
         }
         .padding(2)

@@ -11,22 +11,21 @@ final class WindowManager: ObservableObject {
         static let trafficLightsHorizontalOffset: CGFloat = 6
         static let trafficLightsVerticalOffset: CGFloat = -6
     }
-    
+
     var floatingWindow: NSWindow?
     var mainWindow: NSWindow?
 
     func showFloating() {
-        if floatingWindow != nil { return }
+        if self.floatingWindow != nil { return }
 
-        objectWillChange.send()
-        
+        self.objectWillChange.send()
+
         // Mengambil layout mode untuk menentukan ukuran awal
         let layoutMode = FloatingLayoutMode.from(
             id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
-                ?? AppConstants.FloatingLayoutSettings.defaultLayoutID
-        )
+                ?? AppConstants.FloatingLayoutSettings.defaultLayoutID)
         let contentSize = layoutMode.contentSize
-        
+
         // Inisialisasi View
         let contentView = FloatingTimerView()
 
@@ -35,14 +34,13 @@ final class WindowManager: ObservableObject {
             contentRect: NSRect(x: 100, y: 600, width: contentSize.width, height: contentSize.height),
             styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView], // Added fullSizeContentView
             backing: .buffered,
-            defer: false
-        )
+            defer: false)
 
         // Konfigurasi Transparansi & Glass
         window.isOpaque = false
         window.backgroundColor = .clear
         window.hasShadow = false // PENTING: Set false agar shadow diatur oleh SwiftUI (rounded), bukan kotak window
-        
+
         // Konfigurasi Level & Behavior
         window.level = .floating
         window.hidesOnDeactivate = false
@@ -51,29 +49,29 @@ final class WindowManager: ObservableObject {
         window.isRestorable = false
         window.collectionBehavior = [
             .canJoinAllSpaces,
-            .fullScreenAuxiliary
+            .fullScreenAuxiliary,
         ]
 
         // Hosting View
         window.contentView = NSHostingView(rootView: contentView)
         window.orderFrontRegardless()
 
-        floatingWindow = window
+        self.floatingWindow = window
     }
 
     func hideFloating() {
-        guard floatingWindow != nil else { return }
-        objectWillChange.send()
-        floatingWindow?.orderOut(nil)
-        floatingWindow = nil
+        guard self.floatingWindow != nil else { return }
+        self.objectWillChange.send()
+        self.floatingWindow?.orderOut(nil)
+        self.floatingWindow = nil
     }
 
     func showMainWindow() {
         NSRunningApplication.current.activate(options: [.activateAllWindows])
         NSApp.activate(ignoringOtherApps: true)
-        
-        if mainWindow == nil {
-            mainWindow = makeMainWindow()
+
+        if self.mainWindow == nil {
+            self.mainWindow = self.makeMainWindow()
         }
         guard let window = mainWindow else { return }
 
@@ -96,8 +94,7 @@ final class WindowManager: ObservableObject {
             contentRect: NSRect(x: 0, y: 0, width: fixedSize.width, height: fixedSize.height),
             styleMask: [.titled, .closable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
-            defer: false
-        )
+            defer: false)
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.backgroundColor = NSColor(calibratedRed: 36 / 255, green: 36 / 255, blue: 36 / 255, alpha: 1)
@@ -136,7 +133,7 @@ final class WindowManager: ObservableObject {
     func updateFloatingSize(mode: FloatingLayoutMode) {
         guard let window = floatingWindow else { return }
         let size = mode.contentSize
-        
+
         // Animasi resize window agar halus
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.2
