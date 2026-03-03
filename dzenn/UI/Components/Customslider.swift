@@ -3,7 +3,7 @@ import SwiftUI
 struct CustomSlider: View {
     @Binding var value: Double
     var range: ClosedRange<Double>
-    var step: Double? = nil
+    var step: Double?
 
     var body: some View {
         GeometryReader { geometry in

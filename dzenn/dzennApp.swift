@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct dzennApp: App {
+struct DzennApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

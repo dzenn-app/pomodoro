@@ -127,8 +127,9 @@ final class FocusSessionManager: ObservableObject {
         let defaults = UserDefaults.standard
         let selectedSoundID = defaults.string(forKey: AppConstants.SoundSettings.selectedSoundKey)
             ?? AppConstants.SoundSettings.defaultSoundID
-        let autoMuteAfter5Seconds = defaults.object(forKey: AppConstants.SoundSettings.autoMuteAfter5SecondsKey) as? Bool
-            ?? false
+        let autoMuteAfter5Seconds =
+            defaults.object(forKey: AppConstants.SoundSettings.autoMuteAfter5SecondsKey) as? Bool
+                ?? false
         let soundVolume = defaults.object(forKey: AppConstants.SoundSettings.volumeKey) as? Double
             ?? AppConstants.SoundSettings.defaultVolume
 

@@ -2,12 +2,18 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct FloatingAppSettingsView: View {
-    @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
-    @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
-    @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey) private var imagePath: String = ""
-    @AppStorage(AppConstants.FloatingLayoutSettings.showTimerOnImageKey) private var showTimerOnImage: Bool = true
-    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetXKey) private var appliedImageOffsetX: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
-    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetYKey) private var appliedImageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
+    @AppStorage(AppConstants.FloatingThemeSettings.opacityKey)
+    private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
+    @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey)
+    private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
+    @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey)
+    private var imagePath: String = ""
+    @AppStorage(AppConstants.FloatingLayoutSettings.showTimerOnImageKey)
+    private var showTimerOnImage: Bool = true
+    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetXKey)
+    private var appliedImageOffsetX: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
+    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetYKey)
+    private var appliedImageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
 
     @State private var draftImageOffsetX: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
     @State private var draftImageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
@@ -58,9 +64,12 @@ struct FloatingAppSettingsView: View {
             Text("Opacity")
                 .frame(width: 60, alignment: .leading)
 
+            let minOpacity = AppConstants.FloatingThemeSettings.minOpacity
+            let maxOpacity = AppConstants.FloatingThemeSettings.maxOpacity
+            let opacityRange = minOpacity...maxOpacity
             CustomSlider(
                 value: $floatingOpacity,
-                range: AppConstants.FloatingThemeSettings.minOpacity...AppConstants.FloatingThemeSettings.maxOpacity,
+                range: opacityRange,
                 step: 0.01
             )
             .frame(width: 200)
@@ -90,7 +99,11 @@ struct FloatingAppSettingsView: View {
                 .disabled(!hasSelectedImage)
             }
 
-            Text(hasSelectedImage ? (URL(fileURLWithPath: imagePath).lastPathComponent) : "No image selected")
+            Text(
+                hasSelectedImage
+                    ? URL(fileURLWithPath: imagePath).lastPathComponent
+                    : "No image selected"
+            )
                 .font(.caption)
                 .foregroundColor(.secondary)
 

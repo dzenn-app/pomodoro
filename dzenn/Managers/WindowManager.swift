@@ -21,8 +21,10 @@ final class WindowManager: ObservableObject {
         objectWillChange.send()
         
         // Mengambil layout mode untuk menentukan ukuran awal
-        let layoutMode = FloatingLayoutMode.from(id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
-            ?? AppConstants.FloatingLayoutSettings.defaultLayoutID)
+        let layoutMode = FloatingLayoutMode.from(
+            id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
+                ?? AppConstants.FloatingLayoutSettings.defaultLayoutID
+        )
         let contentSize = layoutMode.contentSize
         
         // Inisialisasi View

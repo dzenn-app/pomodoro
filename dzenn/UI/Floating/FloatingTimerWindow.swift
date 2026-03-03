@@ -3,11 +3,15 @@ import SwiftUI
 struct FloatingTimerView: View {
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
     
-    @AppStorage(AppConstants.FloatingThemeSettings.opacityKey) private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
-    @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey) private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
+    @AppStorage(AppConstants.FloatingThemeSettings.opacityKey)
+    private var floatingOpacity: Double = AppConstants.FloatingThemeSettings.defaultOpacity
+    @AppStorage(AppConstants.FloatingLayoutSettings.selectedLayoutKey)
+    private var layoutModeID: String = AppConstants.FloatingLayoutSettings.defaultLayoutID
     @AppStorage(AppConstants.FloatingLayoutSettings.imagePathKey) private var imagePath: String = ""
-    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetXKey) private var imageOffsetX: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
-    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetYKey) private var imageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
+    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetXKey)
+    private var imageOffsetX: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
+    @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetYKey)
+    private var imageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
 
     var body: some View {
         let theme: FloatingTheme = .black
@@ -76,10 +80,13 @@ struct FloatingTimerView: View {
             if let image = loadImage(path: imagePath) {
                 GeometryReader { proxy in
                     let containerSize = proxy.size
-                    let normalizedOffset = FloatingImageFraming.clampedNormalizedOffset(x: imageOffsetX, y: imageOffsetY)
-                    let imageOffset = FloatingImageFraming.offset(fromNormalized: normalizedOffset,
-                                                                  imageSize: image.size,
-                                                                  containerSize: containerSize)
+                    let normalizedOffset =
+                        FloatingImageFraming.clampedNormalizedOffset(x: imageOffsetX, y: imageOffsetY)
+                    let imageOffset = FloatingImageFraming.offset(
+                        fromNormalized: normalizedOffset,
+                        imageSize: image.size,
+                        containerSize: containerSize
+                    )
 
                     Image(nsImage: image)
                         .resizable()

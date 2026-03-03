@@ -28,12 +28,12 @@ struct MenuBarView: View {
             // ROW 2: PRESETS
             HStack(spacing: 10) {
                 ForEach(Array([quickPreset1, quickPreset2, quickPreset3].enumerated()), id: \.offset) { _, preset in
-                    Button(action: { minutes = preset }) {
+                    Button(action: { minutes = preset }, label: {
                         Text("\(preset)m")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(minutes == preset ? .white : .gray)
                             .frame(minWidth: 30) // Area tap lebih nyaman
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -53,7 +53,7 @@ struct MenuBarView: View {
                 
                 Spacer(minLength: 0)
                 
-                Menu {
+                Menu(content: {
                     Button("Settings") {
                         MenuBarController.shared?.openSettingsWindow()
                         if MenuBarController.shared == nil {
@@ -63,11 +63,11 @@ struct MenuBarView: View {
                     Button("Contact Us") { openContact() }
                     Divider()
                     Button("Quit") { NSApp.terminate(nil) }
-                } label: {
+                }, label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 16))
                         .foregroundColor(.gray)
-                }
+                })
                 .menuStyle(.borderlessButton)
                 .menuIndicator(.hidden)
                 .fixedSize()
