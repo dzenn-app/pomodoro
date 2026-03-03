@@ -128,19 +128,19 @@
 
 # Release & Distribution (Public)
 
-63. Pastikan `Bundle Identifier` final (reverse domain) ✅/❌
-64. Pastikan `Version` + `Build` (CFBundleShortVersionString + CFBundleVersion) ✅/❌
-65. Pastikan entitlements (Sandbox, Hardened Runtime, iCloud? etc) ✅/❌
-66. Siapkan Apple Developer Program + certs (Developer ID Application + Installer) ✅/❌
-67. Archive build via Xcode (Release) ✅/❌
-68. Notarize build (Xcode Organizer / `notarytool`) ✅/❌
-69. Staple notarization ticket ke app ✅/❌
-70. Buat paket distribusi (pilih salah satu) ✅/❌
-71. Opsi A: `.dmg` (paling umum) ✅/❌
-72. Opsi B: `.pkg` (installer) ✅/❌
-73. Test install di Mac lain (fresh user) ✅/❌
-74. Siapkan halaman download + release notes ✅/❌
-75. (Optional) Auto‑update via Sparkle ✅/❌
+63. Pastikan `Bundle Identifier` final (reverse domain) ✅
+64. Pastikan `Version` + `Build` (CFBundleShortVersionString + CFBundleVersion) ❌
+65. Pastikan entitlements yang dibutuhkan (Sandbox, Hardened Runtime, iCloud? etc) ✅/❌
+66. Archive build via Xcode (Release) ✅/❌
+67. Buat paket distribusi (pilih salah satu) ✅/❌
+68. Opsi A: `.dmg` (paling umum) ✅/❌ --> kkny pake .zip aja
+
+70. Siapkan instruksi bypass Gatekeeper (karena tanpa notarization) ✅/❌
+71. Test install di Mac lain (fresh user) ✅/❌
+72. Siapkan halaman download + release notes ✅/❌
+73. (Optional) Auto‑update via Sparkle ✅/❌
+74. (Optional) Homebrew tap + cask ✅/❌
+75. Buat icon aplikasi (AppIcon) ✅/❌
 
 Notes:
 - Tanpa auto‑update, user harus download versi baru manual.
