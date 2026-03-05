@@ -8,6 +8,8 @@ struct MenuBarView: View {
     @AppStorage("quickPreset1") private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
     @AppStorage("quickPreset2") private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
     @AppStorage("quickPreset3") private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
+    @AppStorage(AppConstants.MenuBarSettings.selectedPresetMinutesKey)
+    private var selectedPresetMinutes: Int = AppConstants.MenuBarSettings.defaultPresetMinutes
 
     private let minTime = 1
     private let maxTime = 60
@@ -29,7 +31,10 @@ struct MenuBarView: View {
                     Array([self.quickPreset1, self.quickPreset2, self.quickPreset3].enumerated()),
                     id: \.offset)
                 { _, preset in
-                    Button(action: { self.minutes = preset }, label: {
+                    Button(action: {
+                        self.minutes = preset
+                        self.selectedPresetMinutes = preset
+                    }, label: {
                         Text("\(preset)m")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(self.minutes == preset ? .white : .gray)

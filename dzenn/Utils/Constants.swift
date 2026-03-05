@@ -70,4 +70,10 @@ enum AppConstants {
         static let shortMinutes = 5
         static let longMinutes = 15
     }
+
+    enum MenuBarSettings {
+        static let compactIconKey = "menuBarCompactIcon"
+        static let selectedPresetMinutesKey = "menuBarSelectedPresetMinutes"
+        static let defaultPresetMinutes = 25
+    }
 }

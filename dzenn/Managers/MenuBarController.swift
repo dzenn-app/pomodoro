@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 import SwiftUI
 
 final class MenuBarController: NSObject {
@@ -6,6 +7,8 @@ final class MenuBarController: NSObject {
 
     private let statusItem: NSStatusItem
     private let popover: NSPopover
+    private let session = FocusSessionManager.shared
+    private var cancellables = Set<AnyCancellable>()
 
     override init() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -14,12 +17,6 @@ final class MenuBarController: NSObject {
         super.init()
 
         if let button = statusItem.button {
-            if let image = NSImage(named: "MenuBarIcon") {
-                button.image = self.makeRoundedStatusImage(from: image)
-                button.image?.isTemplate = false
-            } else {
-                button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Dzenn")
-            }
             button.action = #selector(self.togglePopover(_:))
             button.target = self
         }
@@ -29,6 +26,9 @@ final class MenuBarController: NSObject {
         self.popover.contentViewController = NSHostingController(rootView: MenuBarView())
 
         MenuBarController.shared = self
+
+        self.bindStatusUpdates()
+        self.updateStatusItem()
     }
 
     @objc private func togglePopover(_ sender: Any?) {
@@ -52,8 +52,68 @@ final class MenuBarController: NSObject {
         }
     }
 
+    private func bindStatusUpdates() {
+        self.session.timerService.$remainingTime
+            .sink { [weak self] _ in self?.updateStatusItem() }
+            .store(in: &self.cancellables)
+
+        self.session.timerService.$isRunning
+            .sink { [weak self] _ in self?.updateStatusItem() }
+            .store(in: &self.cancellables)
+
+        self.session.timerService.$isPaused
+            .sink { [weak self] _ in self?.updateStatusItem() }
+            .store(in: &self.cancellables)
+
+        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
+            .sink { [weak self] _ in self?.updateStatusItem() }
+            .store(in: &self.cancellables)
+    }
+
+    private func updateStatusItem() {
+        guard let button = statusItem.button else { return }
+
+        let defaults = UserDefaults.standard
+        let compact = defaults.object(forKey: AppConstants.MenuBarSettings.compactIconKey) as? Bool
+            ?? true
+
+        if compact {
+            button.title = ""
+            if let image = NSImage(named: "MenuBarIcon") {
+                button.image = self.makeRoundedStatusImage(from: image)
+                button.image?.isTemplate = false
+            } else {
+                button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Dzenn")
+            }
+        } else {
+            button.image = nil
+            button.title = self.currentMenuBarTitle()
+        }
+    }
+
+    private func currentMenuBarTitle() -> String {
+        let remaining = self.session.timerService.remainingTime
+        let isActive = self.session.timerService.isRunning || self.session.timerService.isPaused
+        if isActive && remaining > 0 {
+            return self.formatTime(remaining)
+        }
+
+        let defaults = UserDefaults.standard
+        let presetMinutes = defaults.object(
+            forKey: AppConstants.MenuBarSettings.selectedPresetMinutesKey) as? Int
+            ?? AppConstants.MenuBarSettings.defaultPresetMinutes
+        return String(format: "%d:00", max(0, presetMinutes))
+    }
+
+    private func formatTime(_ time: TimeInterval) -> String {
+        let totalSeconds = max(0, Int(time.rounded(.down)))
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%d:%02d", minutes, seconds)
+    }
+
     private func makeRoundedStatusImage(from image: NSImage) -> NSImage {
-        let targetSize = NSSize(width: 12, height: 12)
+        let targetSize = NSSize(width: 18, height: 18)
         let cornerRadius: CGFloat = 4
         let finalImage = NSImage(size: targetSize)
         finalImage.lockFocus()

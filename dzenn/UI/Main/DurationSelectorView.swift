@@ -15,6 +15,8 @@ struct DurationSelectorView: View {
     private var autoMuteAfter5Seconds: Bool = false
     @AppStorage(AppConstants.SoundSettings.volumeKey)
     private var soundVolume: Double = AppConstants.SoundSettings.defaultVolume
+    @AppStorage(AppConstants.MenuBarSettings.compactIconKey)
+    private var compactMenuBarIcon: Bool = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -75,6 +77,13 @@ struct DurationSelectorView: View {
                     Text("Automatically mute after 5 seconds")
                     Spacer()
                     Toggle("", isOn: self.$autoMuteAfter5Seconds)
+                        .toggleStyle(.switch)
+                }
+
+                HStack {
+                    Text("Compact icon on menu bar")
+                    Spacer()
+                    Toggle("", isOn: self.$compactMenuBarIcon)
                         .toggleStyle(.switch)
                 }
             }
