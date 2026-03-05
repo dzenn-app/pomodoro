@@ -85,9 +85,14 @@ final class MenuBarController: NSObject {
             } else {
                 button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Dzenn")
             }
+            self.statusItem.length = NSStatusItem.variableLength
+            self.clearStatusWrapper(on: button)
         } else {
             button.image = nil
             button.title = self.currentMenuBarTitle()
+            self.applyStatusWrapper(on: button)
+            let targetWidth = max(28, button.intrinsicContentSize.width + 4)
+            self.statusItem.length = targetWidth
         }
     }
 
@@ -112,8 +117,23 @@ final class MenuBarController: NSObject {
         return String(format: "%d:%02d", minutes, seconds)
     }
 
+    private func applyStatusWrapper(on button: NSStatusBarButton) {
+        button.wantsLayer = true
+        button.layer?.cornerRadius = 4
+        button.layer?.borderWidth = 1
+        button.layer?.borderColor = NSColor.white.withAlphaComponent(0.2).cgColor
+        button.layer?.backgroundColor = NSColor.clear.cgColor
+    }
+
+    private func clearStatusWrapper(on button: NSStatusBarButton) {
+        button.layer?.borderWidth = 0
+        button.layer?.borderColor = nil
+        button.layer?.backgroundColor = nil
+        button.wantsLayer = false
+    }
+
     private func makeRoundedStatusImage(from image: NSImage) -> NSImage {
-        let targetSize = NSSize(width: 18, height: 18)
+        let targetSize = NSSize(width: 12, height: 12)
         let cornerRadius: CGFloat = 4
         let finalImage = NSImage(size: targetSize)
         finalImage.lockFocus()
