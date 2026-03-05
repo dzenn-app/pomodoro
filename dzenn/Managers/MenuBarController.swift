@@ -14,7 +14,12 @@ final class MenuBarController: NSObject {
         super.init()
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Dzenn")
+            if let image = NSImage(named: "MenuBarIcon") {
+                button.image = self.makeRoundedStatusImage(from: image)
+                button.image?.isTemplate = false
+            } else {
+                button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Dzenn")
+            }
             button.action = #selector(self.togglePopover(_:))
             button.target = self
         }
@@ -45,5 +50,21 @@ final class MenuBarController: NSObject {
         DispatchQueue.main.async {
             WindowManager.shared.showMainWindow()
         }
+    }
+
+    private func makeRoundedStatusImage(from image: NSImage) -> NSImage {
+        let targetSize = NSSize(width: 12, height: 12)
+        let cornerRadius: CGFloat = 4
+        let finalImage = NSImage(size: targetSize)
+        finalImage.lockFocus()
+
+        let rect = NSRect(origin: .zero, size: targetSize)
+        let path = NSBezierPath(roundedRect: rect, xRadius: cornerRadius, yRadius: cornerRadius)
+        path.addClip()
+
+        image.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1)
+        finalImage.unlockFocus()
+        finalImage.isTemplate = false
+        return finalImage
     }
 }
