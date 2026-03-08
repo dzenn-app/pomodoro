@@ -26,7 +26,12 @@ final class MenuBarController: NSObject {
             height: AppConstants.MenuBarSettings.panelHeight
         )
         self.popover.behavior = .transient
-        self.popover.contentViewController = NSHostingController(rootView: MenuBarView())
+        let rootView = MenuBarView()
+            .ignoresSafeArea()
+        let hostingController = NSHostingController(rootView: rootView)
+        hostingController.view.wantsLayer = true
+        hostingController.view.layer?.backgroundColor = NSColor.clear.cgColor
+        self.popover.contentViewController = hostingController
 
         MenuBarController.shared = self
 

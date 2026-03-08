@@ -102,7 +102,7 @@ struct MenuBarView: View {
             height: AppConstants.MenuBarSettings.panelHeight
         )
         .background(Color(red: 0.15, green: 0.15, blue: 0.15))
-        .cornerRadius(18)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .onAppear {
             self.minutes = min(self.maxTime, max(self.minTime, self.selectedPresetMinutes))
         }
