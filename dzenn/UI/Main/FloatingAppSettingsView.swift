@@ -87,6 +87,12 @@ struct FloatingAppSettingsView: View {
             Text("Floating Image")
                 .font(.title3)
                 .fontWeight(.semibold)
+            Text(
+                "Recommended size: 1200x800. If you don't have it, no worries, we still compramize"
+            )
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .opacity(0.75)
 
             HStack(spacing: 12) {
                 Button("Choose Image...") {
