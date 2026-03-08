@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct FloatingTimerView: View {
+    private static let timerFontName = "RobotoMono-VariableFont_wght"
+
     @ObservedObject private var timer = FocusSessionManager.shared.timerService
 
     @AppStorage(AppConstants.FloatingThemeSettings.opacityKey)
@@ -51,7 +53,7 @@ struct FloatingTimerView: View {
 
     private func timerOnlyContent(theme: FloatingTheme) -> some View {
         Text(self.format(self.timer.remainingTime))
-            .font(.system(size: 30, weight: .bold, design: .rounded))
+            .font(.custom(Self.timerFontName, size: 30))
             .foregroundColor(theme.textColor)
             .monospacedDigit()
             .padding(.horizontal, 2)
@@ -62,7 +64,7 @@ struct FloatingTimerView: View {
         HStack {
             Spacer()
             Text(self.format(self.timer.remainingTime))
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.custom(Self.timerFontName, size: 26))
                 .foregroundColor(theme.textColor)
                 .monospacedDigit()
             Spacer()

@@ -10,9 +10,22 @@
 		8F0163162F332C8D000A6490 /* dzenn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dzenn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8F0D8A7A2F5D23DB004F61F5 /* Exceptions for "dzenn" folder in "dzenn" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8F0163152F332C8D000A6490 /* dzenn */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8F0163182F332C8D000A6490 /* dzenn */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8F0D8A7A2F5D23DB004F61F5 /* Exceptions for "dzenn" folder in "dzenn" target */,
+			);
 			path = dzenn;
 			sourceTree = "<group>";
 		};
@@ -270,6 +283,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dzenn/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dzenn;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -305,6 +319,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dzenn/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dzenn;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
