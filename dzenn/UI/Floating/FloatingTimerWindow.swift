@@ -32,7 +32,11 @@ struct FloatingTimerView: View {
                     .frame(height: AppConstants.FloatingLayoutSettings.imageOnlyHeight)
             case .mixed:
                 VStack(spacing: 0) {
-                    self.imageContent(theme: theme, imagePath: self.imagePath)
+                    self.imageContent(
+                        theme: theme,
+                        imagePath: self.imagePath,
+                        padding: EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)
+                    )
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedImageHeight)
                     self.timerContent(theme: theme)
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedTimerHeight)
@@ -64,7 +68,7 @@ struct FloatingTimerView: View {
         HStack {
             Spacer()
             Text(self.format(self.timer.remainingTime))
-                .font(.custom(Self.timerFontName, size: 26))
+                .font(.custom(Self.timerFontName, size: 32))
                 .foregroundColor(theme.textColor)
                 .monospacedDigit()
             Spacer()
@@ -74,7 +78,11 @@ struct FloatingTimerView: View {
         .frame(maxHeight: .infinity)
     }
 
-    private func imageContent(theme: FloatingTheme, imagePath: String) -> some View {
+    private func imageContent(
+        theme: FloatingTheme,
+        imagePath: String,
+        padding: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+    ) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(theme.borderColor)
@@ -104,7 +112,7 @@ struct FloatingTimerView: View {
                     .foregroundColor(theme.secondaryTextColor)
             }
         }
-        .padding(10)
+        .padding(padding)
     }
 
     @ViewBuilder

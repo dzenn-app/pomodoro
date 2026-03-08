@@ -61,9 +61,9 @@ enum AppConstants {
         static let width: CGFloat = 260
         static let timerOnlyHeight: CGFloat = 62
         static let imageOnlyHeight: CGFloat = 160
-        static let mixedHeight: CGFloat = 210
+        static let mixedHeight: CGFloat = 216
         static let mixedImageHeight: CGFloat = 160
-        static let mixedTimerHeight: CGFloat = 50
+        static let mixedTimerHeight: CGFloat = 56
     }
 
     enum BreakDuration {
