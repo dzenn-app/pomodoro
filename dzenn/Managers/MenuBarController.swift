@@ -21,7 +21,10 @@ final class MenuBarController: NSObject {
             button.target = self
         }
 
-        self.popover.contentSize = NSSize(width: 360, height: 145)
+        self.popover.contentSize = NSSize(
+            width: AppConstants.MenuBarSettings.panelWidth,
+            height: AppConstants.MenuBarSettings.panelHeight
+        )
         self.popover.behavior = .transient
         self.popover.contentViewController = NSHostingController(rootView: MenuBarView())
 

@@ -20,13 +20,13 @@ struct MenuBarView: View {
 
             RulerPicker(value: self.$minutes, range: self.minTime...self.maxTime)
                 .frame(height: 30)
-                .padding(.top, 15)
+                .padding(.top, 12)
                 .padding(.horizontal, 10)
 
             Spacer()
 
             // ROW 2: PRESETS
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 if self.session.isActive {
                     Button("cancel") {
                         self.cancelSession()
@@ -59,7 +59,7 @@ struct MenuBarView: View {
                     }
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 16)
 
             Spacer()
 
@@ -94,10 +94,13 @@ struct MenuBarView: View {
                 .fixedSize()
             }
             .frame(maxWidth: .infinity) // PAKSA full width
-            .padding(.horizontal, 20)
-            .padding(.bottom, 15)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
         }
-        .frame(width: 320, height: 145)
+        .frame(
+            width: AppConstants.MenuBarSettings.panelWidth,
+            height: AppConstants.MenuBarSettings.panelHeight
+        )
         .background(Color(red: 0.15, green: 0.15, blue: 0.15))
         .cornerRadius(18)
         .onAppear {

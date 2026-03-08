@@ -68,7 +68,7 @@ struct FloatingTimerView: View {
         HStack {
             Spacer()
             Text(self.format(self.timer.remainingTime))
-                .font(.custom(Self.timerFontName, size: 32))
+                .font(.custom(Self.timerFontName, size: 28))
                 .foregroundColor(theme.textColor)
                 .monospacedDigit()
             Spacer()
