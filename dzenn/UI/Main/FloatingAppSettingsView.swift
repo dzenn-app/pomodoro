@@ -88,7 +88,7 @@ struct FloatingAppSettingsView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
             Text(
-                "Recommended size: 1200x800. If you don't have it, no worries, we still compramize"
+                "Recommended size: 1200×800. Other sizes will work too."
             )
             .font(.caption2)
             .foregroundColor(.secondary)
@@ -104,14 +104,7 @@ struct FloatingAppSettingsView: View {
                 .disabled(!hasSelectedImage)
             }
 
-            Text(
-                hasSelectedImage
-                    ? URL(fileURLWithPath: self.imagePath).lastPathComponent
-                    : "No image selected")
-                .font(.caption)
-                .foregroundColor(.secondary)
-
-            Toggle("Show timer on top of image", isOn: self.$showTimerOnImage)
+            Toggle("Show timer below image", isOn: self.$showTimerOnImage)
                 .disabled(!hasSelectedImage)
 
             if let image = loadImage(path: imagePath) {

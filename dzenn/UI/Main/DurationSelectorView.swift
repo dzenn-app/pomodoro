@@ -12,7 +12,7 @@ struct DurationSelectorView: View {
     @AppStorage(AppConstants.SoundSettings.selectedSoundKey)
     private var selectedSoundID: String = AppConstants.SoundSettings.defaultSoundID
     @AppStorage(AppConstants.SoundSettings.autoMuteAfter5SecondsKey)
-    private var autoMuteAfter5Seconds: Bool = false
+    private var autoMuteAfter5Seconds: Bool = true
     @AppStorage(AppConstants.SoundSettings.volumeKey)
     private var soundVolume: Double = AppConstants.SoundSettings.defaultVolume
     @AppStorage(AppConstants.MenuBarSettings.compactIconKey)
