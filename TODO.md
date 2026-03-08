@@ -185,3 +185,26 @@ Pendekatan:
 - Sidebar diberi `titlebarInset` (spacer atas) untuk ruang tombol traffic light + navigation tetap rapi.
 - geser traffic light sedikit jika pelru pakai standardWindowButton frame dan trafficLightsHorizontalOffset
 - Padding universal konten diterapkan konsisten per kolom (left/right/top/bottom) agar border sidebar tetap kelihatan.
+
+---
+
+# Build & Distribusi Singkat (tanpa Developer Account)
+
+- Sebelum build final: set `Build Configuration = Release`, cek `Version` + `Build` valid.
+- Build dulu, lalu `Products` > klik kanan `dzenn.app` > `Show in Finder`.
+- Ambil `dzenn.app` dari folder `Release` (bukan Debug).
+- Distribusi paling simpel: compress jadi `dzenn-macos-<versi>.zip` lalu upload ke GitHub Releases + landing page.
+- Jika pakai `Archive > Direct Distribution`, bisa dipakai jika export tidak gagal signing; kalau gagal, pakai jalur build Release + zip.
+- Karena tidak notarized: tulis panduan `Open Anyway` di `Privacy & Security` untuk user.
+
+## Catatan Workflow (biar tidak bingung)
+
+- Karena belum punya Apple Developer Program ($99/tahun), pakai alur: `Build Release` -> ambil `dzenn.app` -> compress `.zip` -> upload ke Releases/website.
+- Sebelum build final, ubah Scheme `Run` dan `Profile` ke `Release`.
+- Untuk ngoding harian, ubah lagi Scheme ke `Debug`, lanjut edit code, test, lalu saat mau rilis balik lagi ke `Release`.
+- cel appnya itu di `Product > Show build folder in finder > release `
+- Jika ada update kecil setelah rilis:
+- Naikkan `Version`/`Build`.
+- Build `Release` lagi.
+- Ganti app lama di `/Applications` dengan app baru.
+- Launchpad akan tetap menampilkan app yang sama (bundle ID sama); yang berubah adalah versi aplikasinya.
