@@ -27,20 +27,36 @@ struct MenuBarView: View {
 
             // ROW 2: PRESETS
             HStack(spacing: 10) {
-                ForEach(
-                    Array([self.quickPreset1, self.quickPreset2, self.quickPreset3].enumerated()),
-                    id: \.offset)
-                { _, preset in
-                    Button(action: {
-                        self.minutes = preset
-                        self.selectedPresetMinutes = preset
-                    }, label: {
-                        Text("\(preset)m")
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(self.minutes == preset ? .white : .gray)
-                            .frame(minWidth: 30) // Area tap lebih nyaman
-                    })
+                if self.session.isActive {
+                    Button("cancel") {
+                        self.cancelSession()
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.gray)
                     .buttonStyle(.plain)
+
+                    Button("restart") {
+                        self.restartSession()
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.white)
+                    .buttonStyle(.plain)
+                } else {
+                    ForEach(
+                        Array([self.quickPreset1, self.quickPreset2, self.quickPreset3].enumerated()),
+                        id: \.offset)
+                    { _, preset in
+                        Button(action: {
+                            self.minutes = preset
+                            self.selectedPresetMinutes = preset
+                        }, label: {
+                            Text("\(preset)m")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(self.minutes == preset ? .white : .gray)
+                                .frame(minWidth: 30) // Area tap lebih nyaman
+                        })
+                        .buttonStyle(.plain)
+                    }
                 }
             }
             .padding(.horizontal, 20)
@@ -49,8 +65,8 @@ struct MenuBarView: View {
 
             // 3. START & MENU (Bottom) - justify-between dengan FORCE full width
             HStack {
-                Button(action: self.startSession) {
-                    Text("start")
+                Button(action: self.handlePrimaryAction) {
+                    Text(self.primaryButtonTitle)
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.white)
                 }
@@ -84,6 +100,9 @@ struct MenuBarView: View {
         .frame(width: 320, height: 145)
         .background(Color(red: 0.15, green: 0.15, blue: 0.15))
         .cornerRadius(18)
+        .onAppear {
+            self.minutes = min(self.maxTime, max(self.minTime, self.selectedPresetMinutes))
+        }
     }
 
     // MARK: - Actions
@@ -97,6 +116,33 @@ struct MenuBarView: View {
         if let url = URL(string: "mailto:support@dzenn.app") {
             NSWorkspace.shared.open(url)
         }
+    }
+
+    private var primaryButtonTitle: String {
+        if !self.session.isActive { return "start" }
+        return self.session.isPaused ? "resume" : "pause"
+    }
+
+    private func handlePrimaryAction() {
+        if !self.session.isActive {
+            self.startSession()
+            return
+        }
+
+        if self.session.isPaused {
+            self.session.resume()
+        } else {
+            self.session.pause()
+        }
+    }
+
+    private func cancelSession() {
+        self.session.stop()
+        WindowManager.shared.hideFloating()
+    }
+
+    private func restartSession() {
+        self.startSession()
     }
 }
 
