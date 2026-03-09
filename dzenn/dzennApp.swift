@@ -5,7 +5,7 @@
 //  Created by dzulkiram hilmi on 04/02/26.
 //
 
-import SwiftUI  
+import SwiftUI
 
 @main
 struct DzennApp: App {

@@ -3,8 +3,13 @@ import Combine
 import SwiftUI
 
 private final class MenuBarPanel: NSPanel {
-    override var canBecomeKey: Bool { true }
-    override var canBecomeMain: Bool { false }
+    override var canBecomeKey: Bool {
+        true
+    }
+
+    override var canBecomeMain: Bool {
+        false
+    }
 }
 
 private final class EdgeToEdgeHostingView<Content: View>: NSHostingView<Content> {
@@ -36,12 +41,10 @@ final class MenuBarController: NSObject {
                 x: 0,
                 y: 0,
                 width: AppConstants.MenuBarSettings.panelWidth,
-                height: AppConstants.MenuBarSettings.panelHeight
-            ),
+                height: AppConstants.MenuBarSettings.panelHeight),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
-            defer: false
-        )
+            defer: false)
 
         super.init()
 
@@ -106,13 +109,11 @@ final class MenuBarController: NSObject {
 
         let panelSize = NSSize(
             width: AppConstants.MenuBarSettings.panelWidth,
-            height: AppConstants.MenuBarSettings.panelHeight
-        )
+            height: AppConstants.MenuBarSettings.panelHeight)
         let spacing: CGFloat = 6
         var origin = NSPoint(
             x: buttonFrame.midX - (panelSize.width / 2),
-            y: buttonFrame.minY - panelSize.height - spacing
-        )
+            y: buttonFrame.minY - panelSize.height - spacing)
 
         if let screen = NSScreen.screens.first(where: { $0.frame.intersects(buttonFrame) })
             ?? NSScreen.main
@@ -137,16 +138,16 @@ final class MenuBarController: NSObject {
 
     private func installClickMonitors() {
         self.localClickMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown])
-        { [weak self] event in
-            guard let self else { return event }
-            self.dismissPanelIfNeeded(for: event)
-            return event
-        }
+            { [weak self] event in
+                guard let self else { return event }
+                self.dismissPanelIfNeeded(for: event)
+                return event
+            }
 
         self.globalClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown])
-        { [weak self] event in
-            self?.dismissPanelIfNeeded(for: event)
-        }
+            { [weak self] event in
+                self?.dismissPanelIfNeeded(for: event)
+            }
     }
 
     private func removeClickMonitors() {
@@ -163,16 +164,15 @@ final class MenuBarController: NSObject {
     private func dismissPanelIfNeeded(for event: NSEvent) {
         guard self.panel.isVisible else { return }
 
-        let screenPoint: NSPoint
-        if let eventWindow = event.window {
-            screenPoint = eventWindow.convertPoint(toScreen: event.locationInWindow)
+        let screenPoint: NSPoint = if let eventWindow = event.window {
+            eventWindow.convertPoint(toScreen: event.locationInWindow)
         } else {
-            screenPoint = NSEvent.mouseLocation
+            NSEvent.mouseLocation
         }
 
         let clickInsidePanel = self.panel.frame.contains(screenPoint)
         let clickInsideStatusItem = self.statusButtonFrameInScreen()?.contains(screenPoint) ?? false
-        if !clickInsidePanel && !clickInsideStatusItem {
+        if !clickInsidePanel, !clickInsideStatusItem {
             self.closePanel()
         }
     }
@@ -224,7 +224,7 @@ final class MenuBarController: NSObject {
     private func currentMenuBarTitle() -> String {
         let remaining = self.session.timerService.remainingTime
         let isActive = self.session.timerService.isRunning || self.session.timerService.isPaused
-        if isActive && remaining > 0 {
+        if isActive, remaining > 0 {
             return self.formatTime(remaining)
         }
 

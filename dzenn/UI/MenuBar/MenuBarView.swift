@@ -21,9 +21,8 @@ struct MenuBarView: View {
             RulerPicker(value: self.$minutes, range: self.minTime...self.maxTime)
                 .frame(height: 30)
                 .padding(.top, 12)
+                .padding(.bottom, 4)
                 .padding(.horizontal, 10)
-
-            Spacer()
 
             // ROW 2: PRESETS
             HStack(spacing: 8) {
@@ -31,14 +30,14 @@ struct MenuBarView: View {
                     Button("cancel") {
                         self.cancelSession()
                     }
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 13, weight: .regular))
                     .foregroundColor(.secondary)
                     .buttonStyle(.plain)
 
                     Button("restart") {
                         self.restartSession()
                     }
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 13, weight: .regular))
                     .foregroundColor(.primary)
                     .buttonStyle(.plain)
                 } else {
@@ -51,7 +50,7 @@ struct MenuBarView: View {
                             self.selectedPresetMinutes = preset
                         }, label: {
                             Text("\(preset)m")
-                                .font(.system(size: 13, weight: .medium))
+                                .font(.system(size: 13, weight: .regular))
                                 .foregroundColor(self.minutes == preset ? .primary : .secondary)
                                 .frame(minWidth: 30) // Area tap lebih nyaman
                         })
@@ -67,7 +66,7 @@ struct MenuBarView: View {
             HStack {
                 Button(action: self.handlePrimaryAction) {
                     Text(self.primaryButtonTitle)
-                        .font(.system(size: 16, weight: .medium))
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(.primary)
                 }
                 .buttonStyle(.plain)
@@ -99,14 +98,12 @@ struct MenuBarView: View {
         }
         .frame(
             width: AppConstants.MenuBarSettings.panelWidth,
-            height: AppConstants.MenuBarSettings.panelHeight
-        )
+            height: AppConstants.MenuBarSettings.panelHeight)
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
-        )
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1))
         .onAppear {
             self.minutes = min(self.maxTime, max(self.minTime, self.selectedPresetMinutes))
         }
@@ -120,7 +117,7 @@ struct MenuBarView: View {
     }
 
     private func openContact() {
-        if let url = URL(string: "mailto:support@dzenn.app") {
+        if let url = URL(string: "mailto:support@dzenn.com") {
             NSWorkspace.shared.open(url)
         }
     }

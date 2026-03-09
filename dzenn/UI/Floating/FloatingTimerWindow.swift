@@ -35,8 +35,7 @@ struct FloatingTimerView: View {
                     self.imageContent(
                         theme: theme,
                         imagePath: self.imagePath,
-                        padding: EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)
-                    )
+                        padding: EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedImageHeight)
                     self.timerContent(theme: theme)
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedTimerHeight)
@@ -81,8 +80,8 @@ struct FloatingTimerView: View {
     private func imageContent(
         theme: FloatingTheme,
         imagePath: String,
-        padding: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-    ) -> some View {
+        padding: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)) -> some View
+    {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(theme.borderColor)
