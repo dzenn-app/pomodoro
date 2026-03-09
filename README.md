@@ -1,8 +1,16 @@
 # Dzenn - Pomodoro & Timer
 
+<video src="https://res.cloudinary.com/dctl5pihh/video/upload/v1773037353/dzenn-final_ycbwue.mov" controls width="3600"></video>
+
+> An open-source floating timer with image support
+
 A minimal timer designed to stay out of your way. Set a duration with the slider
 or by typing minutes. You can also show an image in the floating timer, either
 as a gentle companion for focus or a simple visual reminder.
+
+## Background
+
+It was the last 10 days of Ramadan. While everyone else was busy at the mosque securing their spiritual gains, I was... well, stuck doing _work_. I thought to myself, "How do I keep grinding but still remember to pray?" So I built a Pomodoro timer that supports custom images! Now I can have constant visual reminders to keep my hustle and my faith perfectly balanced.
 
 ## Features
 
@@ -12,6 +20,7 @@ as a gentle companion for focus or a simple visual reminder.
 - Completion sound customization: you can choose the alert sound used when a session finishes and control playback behavior through app settings.
 - Floating opacity control: the floating window appearance supports adjustable opacity so it can stay visible but less intrusive over other apps.
 - Image positioning: when using image layouts, image offset controls let you fine-tune placement so composition remains readable with timer overlay.
+
 
 ## Install
 
@@ -24,10 +33,12 @@ as a gentle companion for focus or a simple visual reminder.
    - Option A: Right-Click Method (Easiest)
      Right-click the app -> Open -> Click Open in the dialog.
    - Option B: Terminal Method (One command, no dialogs) (recommended)
-     `xattr -d com.apple.quarantine /Applications/dzenn.app`
+     `xattr -d com.apple.quarantine /Applications/Dzenn.app`
 5. Grant permission from **System Settings > Privacy & Security** if macOS still shows a launch warning.
 
+```bash
 Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not notarized through Apple's $99/year developer program. The app is completely safe and open source.
+```
 
 <!-- ## Manual Install
 
@@ -39,7 +50,7 @@ Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not not
 - Select Privacy & Security
 - On the bottom side, select Open Anyway -->
 
-## Homebrew
+<!-- ## Homebrew
 
 - Open terminal
 - Enter: `brew install --cask dzenn-pomodoro`
@@ -51,7 +62,7 @@ Manual
 
 Homebrew
 - Open terminal
-- Enter: `brew uninstall --cask dzenn-pomodoro`
+- Enter: `brew uninstall --cask dzenn-pomodoro` -->
 
 ## Compatibility
 
