@@ -2,17 +2,46 @@ import Cocoa
 import Combine
 import SwiftUI
 
+private final class MenuBarPanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { false }
+}
+
+private final class EdgeToEdgeHostingView<Content: View>: NSHostingView<Content> {
+    override var safeAreaInsets: NSEdgeInsets {
+        .init(top: 0, left: 0, bottom: 0, right: 0)
+    }
+}
+
+private final class EdgeToEdgeHostingController<Content: View>: NSHostingController<Content> {
+    override func loadView() {
+        self.view = EdgeToEdgeHostingView(rootView: self.rootView)
+    }
+}
+
 final class MenuBarController: NSObject {
     static var shared: MenuBarController?
 
     private let statusItem: NSStatusItem
-    private let popover: NSPopover
+    private let panel: MenuBarPanel
     private let session = FocusSessionManager.shared
     private var cancellables = Set<AnyCancellable>()
+    private var localClickMonitor: Any?
+    private var globalClickMonitor: Any?
 
     override init() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        self.popover = NSPopover()
+        self.panel = MenuBarPanel(
+            contentRect: NSRect(
+                x: 0,
+                y: 0,
+                width: AppConstants.MenuBarSettings.panelWidth,
+                height: AppConstants.MenuBarSettings.panelHeight
+            ),
+            styleMask: [.borderless, .nonactivatingPanel],
+            backing: .buffered,
+            defer: false
+        )
 
         super.init()
 
@@ -21,17 +50,21 @@ final class MenuBarController: NSObject {
             button.target = self
         }
 
-        self.popover.contentSize = NSSize(
-            width: AppConstants.MenuBarSettings.panelWidth,
-            height: AppConstants.MenuBarSettings.panelHeight
-        )
-        self.popover.behavior = .transient
+        self.panel.isFloatingPanel = true
+        self.panel.level = .popUpMenu
+        self.panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        self.panel.hidesOnDeactivate = true
+        self.panel.hasShadow = true
+        self.panel.backgroundColor = .clear
+        self.panel.isOpaque = false
         let rootView = MenuBarView()
             .ignoresSafeArea()
-        let hostingController = NSHostingController(rootView: rootView)
+        let hostingController = EdgeToEdgeHostingController(rootView: rootView)
         hostingController.view.wantsLayer = true
         hostingController.view.layer?.backgroundColor = NSColor.clear.cgColor
-        self.popover.contentViewController = hostingController
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.panel.contentViewController = hostingController
+        self.installClickMonitors()
 
         MenuBarController.shared = self
 
@@ -39,24 +72,108 @@ final class MenuBarController: NSObject {
         self.updateStatusItem()
     }
 
+    deinit {
+        self.removeClickMonitors()
+    }
+
     @objc private func togglePopover(_ sender: Any?) {
-        if self.popover.isShown {
-            self.popover.performClose(sender)
+        if self.panel.isVisible {
+            self.closePanel()
         } else {
             self.showPopover()
         }
     }
 
     func showPopover() {
-        guard let button = statusItem.button else { return }
-        self.popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        self.positionPanelBelowStatusItem()
+        self.panel.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
     func openSettingsWindow() {
-        self.popover.performClose(nil)
+        self.closePanel()
         DispatchQueue.main.async {
             WindowManager.shared.showMainWindow()
+        }
+    }
+
+    private func closePanel() {
+        self.panel.orderOut(nil)
+    }
+
+    private func positionPanelBelowStatusItem() {
+        guard let buttonFrame = self.statusButtonFrameInScreen() else { return }
+
+        let panelSize = NSSize(
+            width: AppConstants.MenuBarSettings.panelWidth,
+            height: AppConstants.MenuBarSettings.panelHeight
+        )
+        let spacing: CGFloat = 6
+        var origin = NSPoint(
+            x: buttonFrame.midX - (panelSize.width / 2),
+            y: buttonFrame.minY - panelSize.height - spacing
+        )
+
+        if let screen = NSScreen.screens.first(where: { $0.frame.intersects(buttonFrame) })
+            ?? NSScreen.main
+        {
+            let visible = screen.visibleFrame
+            let minX = visible.minX
+            let maxX = visible.maxX - panelSize.width
+            origin.x = min(max(origin.x, minX), maxX)
+            if origin.y < visible.minY {
+                origin.y = buttonFrame.maxY + spacing
+            }
+        }
+
+        self.panel.setFrame(NSRect(origin: origin, size: panelSize), display: true)
+    }
+
+    private func statusButtonFrameInScreen() -> NSRect? {
+        guard let button = self.statusItem.button, let window = button.window else { return nil }
+        let frameInWindow = button.convert(button.bounds, to: nil)
+        return window.convertToScreen(frameInWindow)
+    }
+
+    private func installClickMonitors() {
+        self.localClickMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown])
+        { [weak self] event in
+            guard let self else { return event }
+            self.dismissPanelIfNeeded(for: event)
+            return event
+        }
+
+        self.globalClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown])
+        { [weak self] event in
+            self?.dismissPanelIfNeeded(for: event)
+        }
+    }
+
+    private func removeClickMonitors() {
+        if let localClickMonitor {
+            NSEvent.removeMonitor(localClickMonitor)
+            self.localClickMonitor = nil
+        }
+        if let globalClickMonitor {
+            NSEvent.removeMonitor(globalClickMonitor)
+            self.globalClickMonitor = nil
+        }
+    }
+
+    private func dismissPanelIfNeeded(for event: NSEvent) {
+        guard self.panel.isVisible else { return }
+
+        let screenPoint: NSPoint
+        if let eventWindow = event.window {
+            screenPoint = eventWindow.convertPoint(toScreen: event.locationInWindow)
+        } else {
+            screenPoint = NSEvent.mouseLocation
+        }
+
+        let clickInsidePanel = self.panel.frame.contains(screenPoint)
+        let clickInsideStatusItem = self.statusButtonFrameInScreen()?.contains(screenPoint) ?? false
+        if !clickInsidePanel && !clickInsideStatusItem {
+            self.closePanel()
         }
     }
 

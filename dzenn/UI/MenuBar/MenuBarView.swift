@@ -32,14 +32,14 @@ struct MenuBarView: View {
                         self.cancelSession()
                     }
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .buttonStyle(.plain)
 
                     Button("restart") {
                         self.restartSession()
                     }
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                     .buttonStyle(.plain)
                 } else {
                     ForEach(
@@ -52,7 +52,7 @@ struct MenuBarView: View {
                         }, label: {
                             Text("\(preset)m")
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(self.minutes == preset ? .white : .gray)
+                                .foregroundColor(self.minutes == preset ? .primary : .secondary)
                                 .frame(minWidth: 30) // Area tap lebih nyaman
                         })
                         .buttonStyle(.plain)
@@ -68,7 +68,7 @@ struct MenuBarView: View {
                 Button(action: self.handlePrimaryAction) {
                     Text(self.primaryButtonTitle)
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                 }
                 .buttonStyle(.plain)
 
@@ -87,7 +87,7 @@ struct MenuBarView: View {
                 }, label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 16))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 })
                 .menuStyle(.borderlessButton)
                 .menuIndicator(.hidden)
@@ -101,8 +101,12 @@ struct MenuBarView: View {
             width: AppConstants.MenuBarSettings.panelWidth,
             height: AppConstants.MenuBarSettings.panelHeight
         )
-        .background(Color(red: 0.15, green: 0.15, blue: 0.15))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(.regularMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+        )
         .onAppear {
             self.minutes = min(self.maxTime, max(self.minTime, self.selectedPresetMinutes))
         }
