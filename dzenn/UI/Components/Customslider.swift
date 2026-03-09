@@ -11,17 +11,14 @@ struct CustomSlider: View {
             let progress = (clampedValue - self.range.lowerBound) / (self.range.upperBound - self.range.lowerBound)
 
             ZStack(alignment: .leading) {
-                // 1. Track (Bagian belakang slider)
                 Capsule()
                     .fill(Color.white.opacity(0.1))
                     .frame(height: 4)
 
-                // 2. Fill (Warna progres)
                 Capsule()
-                    .fill(Color.blue) // Bisa ganti warna sesuai tema Dzenn
+                    .fill(Color.blue)
                     .frame(width: CGFloat(progress) * geometry.size.width, height: 4)
 
-                // 3. Thumb (Bulat sempurna)
                 Circle()
                     .fill(Color.white)
                     .frame(width: 14, height: 14)

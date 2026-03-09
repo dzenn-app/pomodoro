@@ -58,10 +58,9 @@
 30. Theme system (basic) ❌
 31. UI polish ❌
 
-## Testing 
+## Testing
 
 32. Coba tes dengar sound paki blutooh atua kabel
-
 
 --- --- AFTER MVP (RELAES 1.1.0)
 
@@ -135,14 +134,15 @@
 67. Buat paket distribusi (pilih salah satu) ✅/❌
 68. Opsi A: `.dmg` (paling umum) ✅/❌ --> kkny pake .zip aja
 
-70. Siapkan instruksi bypass Gatekeeper (karena tanpa notarization) ✅/❌
-71. Test install di Mac lain (fresh user) ✅/❌
-72. Siapkan halaman download + release notes ✅/❌
-73. (Optional) Auto‑update via Sparkle ✅/❌
-74. (Optional) Homebrew tap + cask ✅/❌
-75. Buat icon aplikasi (AppIcon) ✅/❌
+69. Siapkan instruksi bypass Gatekeeper (karena tanpa notarization) ✅/❌
+70. Test install di Mac lain (fresh user) ✅/❌
+71. Siapkan halaman download + release notes ✅/❌
+72. (Optional) Auto‑update via Sparkle ✅/❌
+73. (Optional) Homebrew tap + cask ✅/❌
+74. Buat icon aplikasi (AppIcon) ✅/❌
 
 Notes:
+
 - Tanpa auto‑update, user harus download versi baru manual.
 - Versi lama **tetap bisa jalan** selama tidak ada dependency server yang memaksa upgrade.
 - Jika pakai Sparkle, kamu bisa pilih `soft update` (rekomendasi)
@@ -150,35 +150,41 @@ Notes:
 
 ---
 
-# ILMU BARU 
+# ILMU BARU
+
 - Cara add sound ke project
-> setelh sound ada d folder, buka file inspector (⌥ + ⌘ + 1)
-> d target membership, checlist project
+  > setelh sound ada d folder, buka file inspector (⌥ + ⌘ + 1)
+  > d target membership, checlist project
 
 ---
-# RAPIKAN FLOATINGAPPSETTINGVIEW : 
 
+# RAPIKAN FLOATINGAPPSETTINGVIEW :
 
-SIDEBAR JDI : 
+SIDEBAR JDI :
+
 - Core
 - Floating
 
-GLASSY EFEFCT : 
+GLASSY EFEFCT :
 mainnya d file
+
 - dzenn/UI/Floating/FloatingTheme.swift
 - dzenn/UI/Floating/FloatingTimerWindow.swift
 
-nnti baru dipanggil di 
+nnti baru dipanggil di
 dzenn/UI/Main/FloatingAppSettingsView.swift (jdi disini g pelru dirubah)
 
 ---
+
 # cara menaytukan sidebar + traffic light
 
 Goal:
+
 - Bikin traffic light bawaan macOS terlihat menyatu di dalam area sidebar (tanpa tombol custom), sambil tetap jaga behavior native.
 - Layout utama tetap 2 area visual: `sidebar` dan `detail`.
 
 Pendekatan:
+
 - Pakai `NSWindow` style `.fullSizeContentView`, lalu set `titlebarAppearsTransparent = true` dan `titleVisibility = .hidden` di `dzenn/Managers/WindowManager.swift`.
 - Biarkan traffic light tetap bawaan/native (close aktif, minimize + zoom disable), jangan ganti dengan SwiftUI custom.
 - Di `MainView`, root layout pakai `ignoresSafeArea(.container, edges: .top)` supaya background/sidebar bisa naik ke area title bar.

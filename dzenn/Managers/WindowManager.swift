@@ -20,28 +20,23 @@ final class WindowManager: ObservableObject {
 
         self.objectWillChange.send()
 
-        // Mengambil layout mode untuk menentukan ukuran awal
+       
         let layoutMode = FloatingLayoutMode.from(
             id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
                 ?? AppConstants.FloatingLayoutSettings.defaultLayoutID)
         let contentSize = layoutMode.contentSize
 
-        // Inisialisasi View
         let contentView = FloatingTimerView()
 
-        // Setup NSPanel
         let window = NSPanel(
             contentRect: NSRect(x: 100, y: 600, width: contentSize.width, height: contentSize.height),
-            styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView], // Added fullSizeContentView
+            styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView], 
             backing: .buffered,
             defer: false)
 
-        // Konfigurasi Transparansi & Glass
         window.isOpaque = false
         window.backgroundColor = .clear
-        window.hasShadow = false // PENTING: Set false agar shadow diatur oleh SwiftUI (rounded), bukan kotak window
-
-        // Konfigurasi Level & Behavior
+        window.hasShadow = false 
         window.level = .floating
         window.hidesOnDeactivate = false
         window.isMovableByWindowBackground = true

@@ -16,7 +16,7 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // 1. RULER SLIDER SECTION (Top)
+
 
             RulerPicker(value: self.$minutes, range: self.minTime...self.maxTime)
                 .frame(height: 30)
@@ -24,7 +24,6 @@ struct MenuBarView: View {
                 .padding(.bottom, 4)
                 .padding(.horizontal, 10)
 
-            // ROW 2: PRESETS
             HStack(spacing: 8) {
                 if self.session.isActive {
                     Button("cancel") {
@@ -52,7 +51,7 @@ struct MenuBarView: View {
                             Text("\(preset)m")
                                 .font(.system(size: 13, weight: .regular))
                                 .foregroundColor(self.minutes == preset ? .primary : .secondary)
-                                .frame(minWidth: 30) // Area tap lebih nyaman
+                                .frame(minWidth: 30) 
                         })
                         .buttonStyle(.plain)
                     }
@@ -62,7 +61,6 @@ struct MenuBarView: View {
 
             Spacer()
 
-            // 3. START & MENU (Bottom) - justify-between dengan FORCE full width
             HStack {
                 Button(action: self.handlePrimaryAction) {
                     Text(self.primaryButtonTitle)
@@ -92,7 +90,7 @@ struct MenuBarView: View {
                 .menuIndicator(.hidden)
                 .fixedSize()
             }
-            .frame(maxWidth: .infinity) // PAKSA full width
+            .frame(maxWidth: .infinity) 
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
         }
@@ -150,7 +148,6 @@ struct MenuBarView: View {
     }
 }
 
-// MARK: - Custom Ruler Component
 
 struct RulerPicker: View {
     @Binding var value: Int
@@ -162,7 +159,7 @@ struct RulerPicker: View {
             let stepWidth = geo.size.width / totalRange
 
             ZStack(alignment: .leading) {
-                // Garis-garis Tick (Background)
+                
                 HStack(spacing: 0) {
                     ForEach(0...Int(totalRange), id: \.self) { index in
                         Rectangle()
@@ -172,7 +169,7 @@ struct RulerPicker: View {
                     }
                 }
 
-                // Cursor Indicator (Garis Putih Terang)
+
                 Rectangle()
                     .fill(Color.white)
                     .frame(width: 2, height: 28)
