@@ -150,6 +150,21 @@ Notes:
 
 ---
 
+# Homebrew (Recommended)
+
+- Buat repo tap: `homebrew-dzenn`
+- Buat cask `dzenn-pomodoro.rb`
+- Isi cask: `version`, `sha256`, `url` (DMG), `name`, `desc`, `homepage`
+- Update `version` + `sha256` setiap rilis
+- Instruksi user:
+- `brew tap <username>/dzenn`
+- `brew install --cask dzenn-pomodoro`
+- Update user:
+- `brew update`
+- `brew upgrade --cask dzenn-pomodoro`
+
+---
+
 # ILMU BARU
 
 - Cara add sound ke project

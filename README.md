@@ -8,10 +8,6 @@ A minimal timer designed to stay out of your way. Set a duration with the slider
 or by typing minutes. You can also show an image in the floating timer, either
 as a gentle companion for focus or a simple visual reminder.
 
-## Background
-
-It was the last 10 days of Ramadan. While everyone else was busy at the mosque securing their spiritual gains, I was... well, stuck doing _work_. I thought to myself, "How do I keep grinding but still remember to pray?" So I built a Pomodoro timer that supports custom images! Now I can have constant visual reminders to keep my hustle and my faith perfectly balanced.
-
 ## Features
 
 - Floating timer: Dzenn can pin a compact always-on-top timer window so countdown progress stays visible without keeping the main window open.
@@ -36,9 +32,9 @@ It was the last 10 days of Ramadan. While everyone else was busy at the mosque s
      `xattr -d com.apple.quarantine /Applications/Dzenn.app`
 5. Grant permission from **System Settings > Privacy & Security** if macOS still shows a launch warning.
 
-```bash
-Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not notarized through Apple's $99/year developer program. The app is completely safe and open source.
-```
+
+> Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not notarized through Apple's $99/year developer program. The app is completely safe and open source.
+
 
 <!-- ## Manual Install
 

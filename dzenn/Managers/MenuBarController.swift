@@ -33,6 +33,7 @@ final class MenuBarController: NSObject {
     private var cancellables = Set<AnyCancellable>()
     private var localClickMonitor: Any?
     private var globalClickMonitor: Any?
+    private var compactDzIcon: NSImage?
 
     override init() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -204,12 +205,7 @@ final class MenuBarController: NSObject {
 
         if compact {
             button.title = ""
-            if let image = NSImage(named: "MenuBarIcon") {
-                button.image = self.makeRoundedStatusImage(from: image)
-                button.image?.isTemplate = false
-            } else {
-                button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Dzenn")
-            }
+            button.image = self.makeCompactDzIcon()
             self.statusItem.length = NSStatusItem.variableLength
             self.clearStatusWrapper(on: button)
         } else {
@@ -257,19 +253,51 @@ final class MenuBarController: NSObject {
         button.wantsLayer = false
     }
 
-    private func makeRoundedStatusImage(from image: NSImage) -> NSImage {
-        let targetSize = NSSize(width: 12, height: 12)
+    private func makeCompactDzIcon() -> NSImage {
+        if let compactDzIcon {
+            return compactDzIcon
+        }
+
+        let text = "dz"
+        let targetSize = NSSize(width: 16, height: 16)
         let cornerRadius: CGFloat = 4
-        let finalImage = NSImage(size: targetSize)
-        finalImage.lockFocus()
 
-        let rect = NSRect(origin: .zero, size: targetSize)
-        let path = NSBezierPath(roundedRect: rect, xRadius: cornerRadius, yRadius: cornerRadius)
-        path.addClip()
+        // Draw a white rounded-rect, then "punch out" the text to create a cut-out look.
+        let image = NSImage(size: targetSize, flipped: false) { rect in
+            let bgRect = rect.insetBy(dx: 0.5, dy: 0.5)
+            let path = NSBezierPath(roundedRect: bgRect, xRadius: cornerRadius, yRadius: cornerRadius)
 
-        image.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1)
-        finalImage.unlockFocus()
-        finalImage.isTemplate = false
-        return finalImage
+            NSColor.white.setFill()
+            path.fill()
+
+            let font = NSFont.monospacedSystemFont(ofSize: 10, weight: .bold)
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: font,
+                .foregroundColor: NSColor.black,
+            ]
+
+            let string = NSString(string: text)
+            let textSize = string.size(withAttributes: attributes)
+            let drawPoint = NSPoint(
+                x: rect.midX - (textSize.width / 2),
+                y: rect.midY - (textSize.height / 2) - 0.5)
+
+            let context = NSGraphicsContext.current
+            let priorOp = context?.compositingOperation ?? .sourceOver
+            context?.compositingOperation = .destinationOut
+            string.draw(at: drawPoint, withAttributes: attributes)
+            context?.compositingOperation = priorOp
+
+            // Subtle border so it remains visible on light menu bars.
+            NSColor.black.withAlphaComponent(0.18).setStroke()
+            path.lineWidth = 1
+            path.stroke()
+
+            return true
+        }
+
+        image.isTemplate = false
+        self.compactDzIcon = image
+        return image
     }
 }
