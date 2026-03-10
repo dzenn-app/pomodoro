@@ -1,6 +1,7 @@
 # Dzenn - Pomodoro & Timer
 
-<video src="https://res.cloudinary.com/dctl5pihh/video/upload/v1773037353/dzenn-final_ycbwue.mov" controls width="3600"></video>
+https://github.com/user-attachments/assets/05fb5ca5-ac03-46b5-92f8-f8cb84091960
+<!-- <video src="https://res.cloudinary.com/dctl5pihh/video/upload/v1773037353/dzenn-final_ycbwue.mov" controls width="3600"></video> -->
 
 > An open-source floating timer with image support
 
