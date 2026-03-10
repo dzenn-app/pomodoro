@@ -18,7 +18,21 @@ as a gentle companion for focus or a simple visual reminder.
 - Image positioning: when using image layouts, image offset controls let you fine-tune placement so composition remains readable with timer overlay.
 
 
-## Install
+## Install (Recommended: Homebrew)
+
+```sh
+brew tap dzenn-app/pomodoro
+brew install --cask dzenn-pomodoro
+```
+
+Update:
+
+```sh
+brew update
+brew upgrade --cask dzenn-pomodoro
+```
+
+## Install (Direct Download)
 
 1. Go to Releases.
 2. Download the appropriate DMG file:
@@ -32,38 +46,9 @@ as a gentle companion for focus or a simple visual reminder.
      `xattr -d com.apple.quarantine /Applications/Dzenn.app`
 5. Grant permission from **System Settings > Privacy & Security** if macOS still shows a launch warning.
 
-
 > Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not notarized through Apple's $99/year developer program. The app is completely safe and open source.
 
 
-<!-- ## Manual Install
-
-- Click to Download
-- Open Dzenn.dmg (double click)
-- "Dzenn.app can't be opened because it is from an unidentified developer"
-  will appear, press OK
-- Open System Settings
-- Select Privacy & Security
-- On the bottom side, select Open Anyway -->
-
-<!-- ## Homebrew
-
-- Open terminal
-- Enter: `brew install --cask dzenn-pomodoro`
-
-## Uninstallation
-
-Manual
-- Delete Dzenn.app from `/Applications`
-
-Homebrew
-- Open terminal
-- Enter: `brew uninstall --cask dzenn-pomodoro` -->
-
-## Compatibility
-
-Requires macOS 15.6 or above.
-
 ## License
 
-BSD 3-Clause
+This project is licensed under the BSD 3-Clause [License](LICENSE) - see the LICENSE file for details.
