@@ -17,8 +17,29 @@ as a gentle companion for focus or a simple visual reminder.
 - Floating opacity control: the floating window appearance supports adjustable opacity so it can stay visible but less intrusive over other apps.
 - Image positioning: when using image layouts, image offset controls let you fine-tune placement so composition remains readable with timer overlay.
 
+## Install
+---
+## Direct Download (Recomended)
 
-## Install (Recommended: Homebrew)
+1. Go to Releases.
+2. Download the appropriate DMG file:
+   - Apple Silicon (M1/M2/M3/M4/M5): `dzenn_*_mac-arm64.dmg`
+   - Intel: `dzenn_*_mac-intel.dmg`
+3. Open the DMG and drag Dzenn to Applications.
+4. First Launch - Choose one method (recommended):
+   - Option A: Right-Click Method (Easiest)
+     Right-click the app -> Open -> Click Open in the dialog.
+   - Option B: Terminal Method (One command, no dialogs) (recommended)
+     `xattr -d com.apple.quarantine /Applications/Dzenn.app`
+5. macOS will show a security warning because the app is not notarized. Use one of these:
+   - Recommended (one command):
+     `xattr -d com.apple.quarantine /Applications/Dzenn.app`
+   - Or via UI:
+     **System Settings > Privacy & Security > Open Anyway**.
+
+> Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not notarized through Apple's $99/year developer program. The app is completely safe and open source.
+
+## Homebrew
 
 ```sh
 brew tap dzenn-app/pomodoro
@@ -31,22 +52,6 @@ Update:
 brew update
 brew upgrade --cask dzenn-pomodoro
 ```
-
-## Install (Direct Download)
-
-1. Go to Releases.
-2. Download the appropriate DMG file:
-   - Apple Silicon (M1/M2/M3/M4/M5): `dzenn_*_mac-arm64.dmg`
-   - Intel: `dzenn_*_mac-intel.dmg`
-3. Open the DMG and drag Dzenn to Applications.
-4. First Launch - Choose one method (recommended):
-   - Option A: Right-Click Method (Easiest)
-     Right-click the app -> Open -> Click Open in the dialog.
-   - Option B: Terminal Method (One command, no dialogs) (recommended)
-     `xattr -d com.apple.quarantine /Applications/Dzenn.app`
-5. Grant permission from **System Settings > Privacy & Security** if macOS still shows a launch warning.
-
-> Note: This is an ad-hoc signed indie app. macOS shows a warning for apps not notarized through Apple's $99/year developer program. The app is completely safe and open source.
 
 
 ## License
