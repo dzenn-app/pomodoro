@@ -28,21 +28,19 @@ struct FloatingAppSettingsView: View {
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .scrollIndicators(.visible)
-        .scrollContentBackground(.hidden)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .onAppear {
             self.floatingOpacity = self.clampOpacity(self.floatingOpacity)
             self.syncDraftOffsetsFromApplied()
             self.updateLayoutMode()
         }
-        .onChange(of: self.floatingOpacity) {
-            self.floatingOpacity = self.clampOpacity(self.floatingOpacity)
+        .onChange(of: self.floatingOpacity) { newValue in
+            self.floatingOpacity = self.clampOpacity(newValue)
         }
-        .onChange(of: self.imagePath) {
+        .onChange(of: self.imagePath) { _ in
             self.updateLayoutMode()
         }
-        .onChange(of: self.showTimerOnImage) {
+        .onChange(of: self.showTimerOnImage) { _ in
             self.updateLayoutMode()
         }
     }
@@ -74,7 +72,7 @@ struct FloatingAppSettingsView: View {
                 .frame(width: 200)
 
             Text("\(Int((self.floatingOpacity * 100).rounded()))%")
-                .monospacedDigit()
+                .font(.system(size: 13, design: .monospaced))
                 .foregroundColor(.secondary)
                 .frame(width: 44, alignment: .trailing)
         }
@@ -192,11 +190,9 @@ struct FloatingAppSettingsView: View {
     }
 
     private func updateLayoutMode() {
-        let nextLayoutID: String = if self.imagePath.isEmpty {
-            AppConstants.FloatingLayoutSettings.defaultLayoutID
-        } else {
-            self.showTimerOnImage ? FloatingLayoutMode.mixed.id : FloatingLayoutMode.imageOnly.id
-        }
+        let nextLayoutID: String = self.imagePath.isEmpty
+            ? AppConstants.FloatingLayoutSettings.defaultLayoutID
+            : (self.showTimerOnImage ? FloatingLayoutMode.mixed.id : FloatingLayoutMode.imageOnly.id)
 
         guard self.layoutModeID != nextLayoutID else { return }
         withAnimation(.easeInOut(duration: 0.2)) {
@@ -269,7 +265,9 @@ private struct FloatingImagePositioningPreview: View {
                     .font(.caption2)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(.ultraThinMaterial, in: Capsule())
+                    .background(
+                        VisualEffectBackground(material: .hudWindow, blendingMode: .withinWindow)
+                            .clipShape(Capsule()))
                     .padding(8)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }

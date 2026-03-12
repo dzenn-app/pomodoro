@@ -52,10 +52,10 @@ struct FloatingTimerView: View {
             self.cachedImage = self.loadImage(path: self.imagePath)
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
         }
-        .onChange(of: self.imagePath) { _, newPath in
+        .onChange(of: self.imagePath) { newPath in
             self.cachedImage = self.loadImage(path: newPath)
         }
-        .onChange(of: self.layoutModeID) {
+        .onChange(of: self.layoutModeID) { _ in
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
         }
     }
@@ -66,7 +66,6 @@ struct FloatingTimerView: View {
             Text(self.format(self.timer.remainingTime))
                 .font(.custom(Self.timerFontName, size: AppConstants.FloatingLayoutSettings.timerOnlyFontSize))
                 .foregroundColor(theme.textColor)
-                .monospacedDigit()
                 .padding(.horizontal, AppConstants.FloatingLayoutSettings.timerOnlyHorizontalPadding)
                 .offset(y: AppConstants.FloatingLayoutSettings.timerOnlyVerticalOffset)
             Spacer(minLength: 0)
@@ -79,7 +78,6 @@ struct FloatingTimerView: View {
             Text(self.format(self.timer.remainingTime))
                 .font(.custom(Self.timerFontName, size: AppConstants.FloatingLayoutSettings.mixedTimerFontSize))
                 .foregroundColor(theme.textColor)
-                .monospacedDigit()
             Spacer()
         }
         .padding(.horizontal, AppConstants.FloatingLayoutSettings.mixedTimerHorizontalPadding)

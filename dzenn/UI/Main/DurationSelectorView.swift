@@ -97,17 +97,17 @@ struct DurationSelectorView: View {
             }
             self.soundVolume = self.clampVolume(self.soundVolume)
         }
-        .onChange(of: self.quickPreset1) {
-            self.quickPreset1 = self.clampPreset(self.quickPreset1)
+        .onChange(of: self.quickPreset1) { newValue in
+            self.quickPreset1 = self.clampPreset(newValue)
         }
-        .onChange(of: self.quickPreset2) {
-            self.quickPreset2 = self.clampPreset(self.quickPreset2)
+        .onChange(of: self.quickPreset2) { newValue in
+            self.quickPreset2 = self.clampPreset(newValue)
         }
-        .onChange(of: self.quickPreset3) {
-            self.quickPreset3 = self.clampPreset(self.quickPreset3)
+        .onChange(of: self.quickPreset3) { newValue in
+            self.quickPreset3 = self.clampPreset(newValue)
         }
-        .onChange(of: self.soundVolume) {
-            self.soundVolume = self.clampVolume(self.soundVolume)
+        .onChange(of: self.soundVolume) { newValue in
+            self.soundVolume = self.clampVolume(newValue)
         }
     }
 

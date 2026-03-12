@@ -87,8 +87,8 @@ struct MenuBarView: View {
                         .foregroundColor(.secondary)
                 })
                 .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
                 .fixedSize()
+                .hideMenuIndicator()
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 16)
@@ -97,7 +97,7 @@ struct MenuBarView: View {
         .frame(
             width: AppConstants.MenuBarSettings.panelWidth,
             height: AppConstants.MenuBarSettings.panelHeight)
-        .background(.regularMaterial)
+        .background(VisualEffectBackground())
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -178,6 +178,17 @@ struct RulerPicker: View {
                         let newValue = Int(Double(self.range.lowerBound) + (percent * Double(totalRange)))
                         self.value = newValue
                     })
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func hideMenuIndicator() -> some View {
+        if #available(macOS 12.0, *) {
+            self.menuIndicator(.hidden)
+        } else {
+            self
         }
     }
 }
