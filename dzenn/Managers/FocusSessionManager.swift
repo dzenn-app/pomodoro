@@ -12,7 +12,7 @@ final class FocusSessionManager: ObservableObject {
     @Published var isPaused: Bool = false
     @Published var state: SessionState = .idle
 
-    let timerService = TimerService()
+    private(set) var timerService = TimerService()
 
     private var cancellables = Set<AnyCancellable>()
     private var completionHandled = false
@@ -69,18 +69,23 @@ final class FocusSessionManager: ObservableObject {
 
     func startBreak(type: BreakType, minutes: Int? = nil) {
         self.soundAlertPlayer.stop()
-        let minutes = minutes ?? (type == .short
-            ? AppConstants.BreakDuration.shortMinutes
-            : AppConstants.BreakDuration.longMinutes)
+        let duration = minutes.map { TimeInterval($0 * 60) } ?? self.breakDuration(for: type)
 
         self.activeTask = type.title
-        self.duration = TimeInterval(minutes * 60)
+        self.duration = duration
         self.isActive = true
         self.isPaused = false
         self.state = .breaking(type)
         self.completionHandled = false
 
         self.timerService.start(duration: self.duration)
+    }
+
+    private func breakDuration(for type: BreakType) -> TimeInterval {
+        let minutes = type == .short
+            ? AppConstants.BreakDuration.shortMinutes
+            : AppConstants.BreakDuration.longMinutes
+        return TimeInterval(minutes * 60)
     }
 
     private func handleTimerFinished() {
@@ -112,10 +117,7 @@ final class FocusSessionManager: ObservableObject {
 
     private func prepareBreak(type: BreakType) {
         self.activeTask = ""
-        self.duration = TimeInterval(
-            (type == .short
-                ? AppConstants.BreakDuration.shortMinutes
-                : AppConstants.BreakDuration.longMinutes) * 60)
+        self.duration = self.breakDuration(for: type)
         self.isActive = false
         self.isPaused = false
         self.state = .breaking(type)
@@ -138,6 +140,7 @@ final class FocusSessionManager: ObservableObject {
     }
 }
 
+@MainActor
 private final class SoundAlertPlayer {
     private var player: AVAudioPlayer?
     private var autoMuteWorkItem: DispatchWorkItem?

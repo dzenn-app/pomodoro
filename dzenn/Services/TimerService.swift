@@ -52,7 +52,7 @@ final class TimerService: ObservableObject {
     }
 
     func pause() {
-        guard self.isRunning, let endTime else { return }
+        guard self.isRunning, let endTime = self.endTime else { return }
 
         let now = Date()
         self.remainingTime = max(0, endTime.timeIntervalSince(now))

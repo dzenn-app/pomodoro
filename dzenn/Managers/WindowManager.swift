@@ -91,7 +91,7 @@ final class WindowManager: ObservableObject {
             defer: false)
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
-        window.backgroundColor = NSColor(calibratedRed: 36 / 255, green: 36 / 255, blue: 36 / 255, alpha: 1)
+        window.backgroundColor = .dzennBackground
         window.isReleasedWhenClosed = false
         window.isRestorable = false
         window.identifier = NSUserInterfaceItemIdentifier("DzennMainWindow")

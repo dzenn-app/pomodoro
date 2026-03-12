@@ -15,6 +15,8 @@ struct FloatingTimerView: View {
     @AppStorage(AppConstants.FloatingLayoutSettings.imageOffsetYKey)
     private var imageOffsetY: Double = AppConstants.FloatingLayoutSettings.defaultImageOffset
 
+    @State private var cachedImage: NSImage?
+
     var body: some View {
         let theme: FloatingTheme = .black
         let clampedOpacity = min(
@@ -47,7 +49,11 @@ struct FloatingTimerView: View {
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .animation(.easeInOut(duration: 0.2), value: self.floatingOpacity)
         .onAppear {
+            self.cachedImage = self.loadImage(path: self.imagePath)
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
+        }
+        .onChange(of: self.imagePath) { _, newPath in
+            self.cachedImage = self.loadImage(path: newPath)
         }
         .onChange(of: self.layoutModeID) {
             WindowManager.shared.updateFloatingSize(mode: layoutMode)
@@ -71,12 +77,12 @@ struct FloatingTimerView: View {
         HStack {
             Spacer()
             Text(self.format(self.timer.remainingTime))
-                .font(.custom(Self.timerFontName, size: 28))
+                .font(.custom(Self.timerFontName, size: AppConstants.FloatingLayoutSettings.mixedTimerFontSize))
                 .foregroundColor(theme.textColor)
                 .monospacedDigit()
             Spacer()
         }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, AppConstants.FloatingLayoutSettings.mixedTimerHorizontalPadding)
         .padding(.vertical, 0)
         .frame(maxHeight: .infinity)
     }
@@ -91,7 +97,7 @@ struct FloatingTimerView: View {
                 .fill(theme.borderColor)
                 .opacity(0.2)
 
-            if let image = loadImage(path: imagePath) {
+            if let image = cachedImage {
                 GeometryReader { proxy in
                     let containerSize = proxy.size
                     let normalizedOffset =

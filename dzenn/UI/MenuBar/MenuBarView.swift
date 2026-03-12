@@ -4,15 +4,17 @@ struct MenuBarView: View {
     @ObservedObject private var session = FocusSessionManager.shared
     @State private var minutes: Int = 25
 
-    // Presets
-    @AppStorage("quickPreset1") private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
-    @AppStorage("quickPreset2") private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
-    @AppStorage("quickPreset3") private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
+    @AppStorage(AppConstants.QuickPresets.preset1Key)
+    private var quickPreset1: Int = AppConstants.QuickPresets.defaultValues[0]
+    @AppStorage(AppConstants.QuickPresets.preset2Key)
+    private var quickPreset2: Int = AppConstants.QuickPresets.defaultValues[1]
+    @AppStorage(AppConstants.QuickPresets.preset3Key)
+    private var quickPreset3: Int = AppConstants.QuickPresets.defaultValues[2]
     @AppStorage(AppConstants.MenuBarSettings.selectedPresetMinutesKey)
     private var selectedPresetMinutes: Int = AppConstants.MenuBarSettings.defaultPresetMinutes
 
-    private let minTime = 1
-    private let maxTime = 60
+    private let minTime = AppConstants.QuickPresets.minMinutes
+    private let maxTime = AppConstants.QuickPresets.maxMinutes
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -32,7 +34,7 @@ struct MenuBarView: View {
                     .buttonStyle(.plain)
 
                     Button("restart") {
-                        self.restartSession()
+                        self.startSession()
                     }
                     .font(.system(size: 13, weight: .regular))
                     .foregroundColor(.primary)
@@ -140,10 +142,6 @@ struct MenuBarView: View {
         self.session.stop()
         WindowManager.shared.hideFloating()
     }
-
-    private func restartSession() {
-        self.startSession()
-    }
 }
 
 struct RulerPicker: View {
@@ -152,7 +150,7 @@ struct RulerPicker: View {
 
     var body: some View {
         GeometryReader { geo in
-            let totalRange = CGFloat(range.upperBound - self.range.lowerBound)
+            let totalRange = CGFloat(self.range.upperBound - self.range.lowerBound)
             let stepWidth = geo.size.width / totalRange
 
             ZStack(alignment: .leading) {
@@ -177,7 +175,7 @@ struct RulerPicker: View {
                     .onChanged { drag in
                         let locationX = drag.location.x
                         let percent = max(0, min(1, locationX / geo.size.width))
-                        let newValue = Int(Double(range.lowerBound) + (percent * Double(totalRange)))
+                        let newValue = Int(Double(self.range.lowerBound) + (percent * Double(totalRange)))
                         self.value = newValue
                     })
         }

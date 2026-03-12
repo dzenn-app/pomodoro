@@ -65,11 +65,11 @@ struct MainView: View {
     }
 
     private var mainBackground: Color {
-        Color(red: 36 / 255, green: 36 / 255, blue: 36 / 255)
+        .dzennBackground
     }
 
     private var sidebarBackground: Color {
-        Color(red: 31 / 255, green: 31 / 255, blue: 31 / 255)
+        .dzennSidebarBackground
     }
 }
 

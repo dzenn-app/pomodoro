@@ -1,27 +1,13 @@
 import Foundation
 
-struct SoundOption: Identifiable, Hashable {
-    let id: String
-    let title: String
-    let fileName: String
-    let fileExtension: String
-}
-
 enum AppConstants {
-    enum FocusDuration {
-        static let defaultMinutes = 25
-        static let minMinutes = 5
-        static let maxMinutes = 120
-        static let stepMinutes = 5
-    }
-
     enum QuickPresets {
         static let preset1Key = "quickPreset1"
         static let preset2Key = "quickPreset2"
         static let preset3Key = "quickPreset3"
-        static let defaultValues = [5, 10, 25]
-        static let minMinutes = 1
-        static let maxMinutes = 60
+        static let defaultValues: [Int] = [5, 10, 25]
+        static let minMinutes: Int = 1
+        static let maxMinutes: Int = 60
     }
 
     enum SoundSettings {
@@ -67,11 +53,13 @@ enum AppConstants {
         static let mixedHeight: CGFloat = 192
         static let mixedImageHeight: CGFloat = 142
         static let mixedTimerHeight: CGFloat = 50
+        static let mixedTimerFontSize: CGFloat = 28
+        static let mixedTimerHorizontalPadding: CGFloat = 12
     }
 
     enum BreakDuration {
-        static let shortMinutes = 5
-        static let longMinutes = 15
+        static let shortMinutes: Int = 5
+        static let longMinutes: Int = 15
     }
 
     enum MenuBarSettings {
