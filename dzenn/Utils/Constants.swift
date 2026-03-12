@@ -60,6 +60,9 @@ enum AppConstants {
         static let timerOnlyWidth: CGFloat = 110
         static let width: CGFloat = 230
         static let timerOnlyHeight: CGFloat = 62
+        static let timerOnlyFontSize: CGFloat = 30
+        static let timerOnlyHorizontalPadding: CGFloat = 0
+        static let timerOnlyVerticalOffset: CGFloat = 1
         static let imageOnlyHeight: CGFloat = 142
         static let mixedHeight: CGFloat = 192
         static let mixedImageHeight: CGFloat = 142

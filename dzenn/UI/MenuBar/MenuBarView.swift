@@ -16,8 +16,6 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-
-
             RulerPicker(value: self.$minutes, range: self.minTime...self.maxTime)
                 .frame(height: 30)
                 .padding(.top, 12)
@@ -51,7 +49,7 @@ struct MenuBarView: View {
                             Text("\(preset)m")
                                 .font(.system(size: 13, weight: .regular))
                                 .foregroundColor(self.minutes == preset ? .primary : .secondary)
-                                .frame(minWidth: 30) 
+                                .frame(minWidth: 30)
                         })
                         .buttonStyle(.plain)
                     }
@@ -90,7 +88,7 @@ struct MenuBarView: View {
                 .menuIndicator(.hidden)
                 .fixedSize()
             }
-            .frame(maxWidth: .infinity) 
+            .frame(maxWidth: .infinity)
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
         }
@@ -148,7 +146,6 @@ struct MenuBarView: View {
     }
 }
 
-
 struct RulerPicker: View {
     @Binding var value: Int
     let range: ClosedRange<Int>
@@ -159,7 +156,6 @@ struct RulerPicker: View {
             let stepWidth = geo.size.width / totalRange
 
             ZStack(alignment: .leading) {
-                
                 HStack(spacing: 0) {
                     ForEach(0...Int(totalRange), id: \.self) { index in
                         Rectangle()
@@ -168,7 +164,6 @@ struct RulerPicker: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-
 
                 Rectangle()
                     .fill(Color.white)

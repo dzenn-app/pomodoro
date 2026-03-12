@@ -20,7 +20,6 @@ final class WindowManager: ObservableObject {
 
         self.objectWillChange.send()
 
-       
         let layoutMode = FloatingLayoutMode.from(
             id: UserDefaults.standard.string(forKey: AppConstants.FloatingLayoutSettings.selectedLayoutKey)
                 ?? AppConstants.FloatingLayoutSettings.defaultLayoutID)
@@ -30,13 +29,13 @@ final class WindowManager: ObservableObject {
 
         let window = NSPanel(
             contentRect: NSRect(x: 100, y: 600, width: contentSize.width, height: contentSize.height),
-            styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView], 
+            styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView],
             backing: .buffered,
             defer: false)
 
         window.isOpaque = false
         window.backgroundColor = .clear
-        window.hasShadow = false 
+        window.hasShadow = false
         window.level = .floating
         window.hidesOnDeactivate = false
         window.isMovableByWindowBackground = true

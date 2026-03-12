@@ -55,12 +55,16 @@ struct FloatingTimerView: View {
     }
 
     private func timerOnlyContent(theme: FloatingTheme) -> some View {
-        Text(self.format(self.timer.remainingTime))
-            .font(.custom(Self.timerFontName, size: 30))
-            .foregroundColor(theme.textColor)
-            .monospacedDigit()
-            .padding(.horizontal, 2)
-            .padding(.vertical, 8)
+        VStack(spacing: 0) {
+            Spacer(minLength: 0)
+            Text(self.format(self.timer.remainingTime))
+                .font(.custom(Self.timerFontName, size: AppConstants.FloatingLayoutSettings.timerOnlyFontSize))
+                .foregroundColor(theme.textColor)
+                .monospacedDigit()
+                .padding(.horizontal, AppConstants.FloatingLayoutSettings.timerOnlyHorizontalPadding)
+                .offset(y: AppConstants.FloatingLayoutSettings.timerOnlyVerticalOffset)
+            Spacer(minLength: 0)
+        }
     }
 
     private func timerContent(theme: FloatingTheme) -> some View {
