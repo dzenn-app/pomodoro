@@ -9,17 +9,6 @@ enum FloatingLayoutMode: String, CaseIterable, Identifiable {
         rawValue
     }
 
-    var title: String {
-        switch self {
-        case .timerOnly:
-            "Timer Only"
-        case .imageOnly:
-            "Image Only"
-        case .mixed:
-            "Mixed"
-        }
-    }
-
     var contentSize: CGSize {
         switch self {
         case .timerOnly:

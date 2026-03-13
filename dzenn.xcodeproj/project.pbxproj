@@ -6,6 +6,22 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		8FC509702F627D8F00E852DA /* Periphery */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 8FC509712F627D8F00E852DA /* Build configuration list for PBXAggregateTarget "Periphery" */;
+			buildPhases = (
+				8FC509742F627D9900E852DA /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Periphery;
+			packageProductDependencies = (
+			);
+			productName = Periphery;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXFileReference section */
 		8F0163162F332C8D000A6490 /* dzenn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dzenn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -97,6 +113,9 @@
 					8F0163152F332C8D000A6490 = {
 						CreatedOnToolsVersion = 26.2;
 					};
+					8FC509702F627D8F00E852DA = {
+						CreatedOnToolsVersion = 26.2;
+					};
 				};
 			};
 			buildConfigurationList = 8F0163112F332C8D000A6490 /* Build configuration list for PBXProject "dzenn" */;
@@ -117,6 +136,7 @@
 			projectRoot = "";
 			targets = (
 				8F0163152F332C8D000A6490 /* dzenn */,
+				8FC509702F627D8F00E852DA /* Periphery */,
 			);
 		};
 /* End PBXProject section */
@@ -130,6 +150,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8FC509742F627D9900E852DA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"\n\n# Masuk ke folder project\ncd \"${SRCROOT}\"\n\nif which periphery >/dev/null; then\n    if [ -f \".periphery.yml\" ]; then\n        echo \"Starting Periphery scan...\"\n        periphery scan --config \".periphery.yml\" || true\n    else\n        echo \"warning: .periphery.yml not found. Running setup-less scan...\"\n        periphery scan || true\n    fi\nelse\n    echo \"warning: periphery not installed. Visit https://github.com/peripheryapp/periphery\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8F0163122F332C8D000A6490 /* Sources */ = {
@@ -342,6 +382,24 @@
 			};
 			name = Release;
 		};
+		8FC509722F627D8F00E852DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4P9YD49S3A;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8FC509732F627D8F00E852DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4P9YD49S3A;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -359,6 +417,15 @@
 			buildConfigurations = (
 				8F0163222F332C8F000A6490 /* Debug */,
 				8F0163232F332C8F000A6490 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8FC509712F627D8F00E852DA /* Build configuration list for PBXAggregateTarget "Periphery" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FC509722F627D8F00E852DA /* Debug */,
+				8FC509732F627D8F00E852DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -9,11 +9,4 @@ enum SessionState: Equatable {
 enum BreakType: String, Equatable {
     case short
     case long
-
-    var title: String {
-        switch self {
-        case .short: "Short Break"
-        case .long: "Long Break"
-        }
-    }
 }

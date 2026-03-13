@@ -67,20 +67,6 @@ final class FocusSessionManager: ObservableObject {
         self.isPaused = false
     }
 
-    func startBreak(type: BreakType, minutes: Int? = nil) {
-        self.soundAlertPlayer.stop()
-        let duration = minutes.map { TimeInterval($0 * 60) } ?? self.breakDuration(for: type)
-
-        self.activeTask = type.title
-        self.duration = duration
-        self.isActive = true
-        self.isPaused = false
-        self.state = .breaking(type)
-        self.completionHandled = false
-
-        self.timerService.start(duration: self.duration)
-    }
-
     private func breakDuration(for type: BreakType) -> TimeInterval {
         let minutes = type == .short
             ? AppConstants.BreakDuration.shortMinutes

@@ -132,9 +132,3 @@ struct DurationSelectorView: View {
         return formatter
     }()
 }
-
-struct DurationSelectorView_Previews: PreviewProvider {
-    static var previews: some View {
-        DurationSelectorView()
-    }
-}

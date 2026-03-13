@@ -7,10 +7,6 @@ enum FloatingTheme: String, CaseIterable, Identifiable {
         rawValue
     }
 
-    var title: String {
-        "Black"
-    }
-
     var backgroundColor: Color {
         .black
     }

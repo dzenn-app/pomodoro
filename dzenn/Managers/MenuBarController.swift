@@ -80,7 +80,7 @@ final class MenuBarController: NSObject {
         self.removeClickMonitors()
     }
 
-    @objc private func togglePopover(_ sender: Any?) {
+    @objc private func togglePopover(_: Any?) {
         if self.panel.isVisible {
             self.closePanel()
         } else {

@@ -30,13 +30,12 @@ struct FloatingTimerView: View {
                 self.timerOnlyContent(theme: theme)
                     .frame(height: AppConstants.FloatingLayoutSettings.timerOnlyHeight)
             case .imageOnly:
-                self.imageContent(theme: theme, imagePath: self.imagePath)
+                self.imageContent(theme: theme)
                     .frame(height: AppConstants.FloatingLayoutSettings.imageOnlyHeight)
             case .mixed:
                 VStack(spacing: 0) {
                     self.imageContent(
                         theme: theme,
-                        imagePath: self.imagePath,
                         padding: EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
                         .frame(height: AppConstants.FloatingLayoutSettings.mixedImageHeight)
                     self.timerContent(theme: theme)
@@ -87,7 +86,6 @@ struct FloatingTimerView: View {
 
     private func imageContent(
         theme: FloatingTheme,
-        imagePath: String,
         padding: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)) -> some View
     {
         ZStack {

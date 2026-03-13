@@ -7,5 +7,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         self.menuBarController = MenuBarController()
+        _ = self.menuBarController // keep strong reference (avoid dealloc)
     }
 }
