@@ -128,7 +128,6 @@ final class WindowManager: ObservableObject {
         guard let window = floatingWindow else { return }
         let size = mode.contentSize
 
-        // Animasi resize window agar halus
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.2
             window.animator().setContentSize(size)
