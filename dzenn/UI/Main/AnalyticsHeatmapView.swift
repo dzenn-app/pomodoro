@@ -12,18 +12,20 @@ struct AnalyticsHeatmapView: View {
         Color(red: 0.58, green: 0.71, blue: 0.58),
         Color(red: 0.74, green: 0.84, blue: 0.68),
     ]
-    private let rowSpacing: CGFloat = 6
-    private let columnSpacing: CGFloat = 4
+    private let rowSpacing: CGFloat = 3
+    private let columnSpacing: CGFloat = 3
 
     private static let monthFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }()
 
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }()
 
@@ -90,8 +92,8 @@ struct AnalyticsHeatmapView: View {
 
     private var gridHeight: CGFloat {
         let rows = 7
-        let cellSize: CGFloat = 18
-        let monthAxisHeight: CGFloat = 24
+        let cellSize: CGFloat = 12
+        let monthAxisHeight: CGFloat = 20
         return (CGFloat(rows) * cellSize) + (CGFloat(rows - 1) * self.rowSpacing) + monthAxisHeight
     }
 
@@ -167,12 +169,12 @@ struct AnalyticsHeatmapView: View {
         let columnCount = max(CGFloat(self.weekColumns.count), 1)
         let totalSpacing = CGFloat(max(self.weekColumns.count - 1, 0)) * self.columnSpacing
         let columnWidth = (safeWidth - totalSpacing) / columnCount
-        let cellSize = min(18, max(11, columnWidth * 0.56))
+        let cellSize = min(12, max(10, columnWidth * 0.6))
 
         return GridMetrics(
             cellSize: cellSize,
             columnWidth: max(columnWidth, cellSize),
-            cornerRadius: min(5, max(3, cellSize * 0.24)))
+            cornerRadius: min(3, max(2, cellSize * 0.2)))
     }
 }
 
