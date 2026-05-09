@@ -62,17 +62,22 @@ struct AnalyticsDashboardView: View {
     @ViewBuilder
     private func emptyStateView(_ emptyState: DashboardEmptyState) -> some View {
         switch emptyState {
+        case .noData:
+            AnalyticsEmptyStateView()
+        case .noSessions:
+            AnalyticsEmptyStateView(
+                icon: "hourglass",
+                message: "No focus sessions yet",
+                subtitle: "Start your first focus session to begin tracking progress.")
         case .permissionsRequired:
             AnalyticsEmptyStateView(
                 icon: "lock.shield",
-                message: "Accessibility permission needed",
-                subtitle: "Grant access so Dzenn can track focused apps and build real analytics.",
+                message: "App tracking disabled",
+                subtitle: "Enable Accessibility permission to track which apps you use during focus sessions.",
                 actionTitle: "Open System Settings",
                 action: {
                     self.permissionsManager.openSystemSettings()
                 })
-        case .noData:
-            AnalyticsEmptyStateView()
         }
     }
 
@@ -136,8 +141,6 @@ struct AnalyticsDashboardView: View {
             return
         }
 
-        self.permissionsManager.refreshStatus()
-
         let sessions = AnalyticsStore.shared.loadFocusSessions()
         let appEvents = AnalyticsStore.shared.loadAppActivityEvents()
         let webVisits = AnalyticsStore.shared.loadWebsiteVisits()
@@ -151,8 +154,10 @@ struct AnalyticsDashboardView: View {
 
         if data.hasVisibleData {
             self.dashboardState = .loaded(data)
-        } else if !self.permissionsManager.canTrackApps {
-            self.dashboardState = .empty(.permissionsRequired)
+        } else if sessions.isEmpty {
+            self.dashboardState = .empty(.noSessions)
+        } else if appEvents.isEmpty && webVisits.isEmpty {
+            self.dashboardState = .empty(.noData)
         } else {
             self.dashboardState = .empty(.noData)
         }
@@ -215,8 +220,9 @@ private enum DashboardState {
 }
 
 private enum DashboardEmptyState {
-    case permissionsRequired
     case noData
+    case noSessions
+    case permissionsRequired
 }
 
 private struct AnalyticsDashboardData {

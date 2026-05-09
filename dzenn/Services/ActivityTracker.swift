@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import AppKit
 
-final class ActivityTracker: ObservableObject {
+final class ActivityTracker: NSObject, ObservableObject {
     static let shared = ActivityTracker()
 
     @Published var isTracking = false
@@ -13,7 +13,8 @@ final class ActivityTracker: ObservableObject {
     private var currentAppName: String?
     private var pendingEvents: [AppActivityEvent] = []
 
-    private init() {
+    private override init() {
+        super.init()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(appDidActivate),
@@ -49,7 +50,7 @@ final class ActivityTracker: ObservableObject {
         return events
     }
 
-    @objc private func appDidActivate() {
+    @objc private func appDidActivate(_ notification: Notification) {
         guard isTracking else { return }
         finalizeCurrentEvent()
         captureCurrentApp()
