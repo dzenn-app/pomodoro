@@ -43,11 +43,21 @@ final class AnalyticsEngine {
 
     func buildHeatmapCells(
         from sessions: [FocusSessionRecord],
-        days: Int = AppConstants.AnalyticsSettings.heatmapDays) -> [AnalyticsHeatmapCell]
+        maxWeeks: Int = AppConstants.AnalyticsSettings.heatmapWeeks) -> [AnalyticsHeatmapCell]
     {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
-        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: today)!
+        let recentLimit = calendar.date(
+            byAdding: .day,
+            value: -((maxWeeks * 7) - 1),
+            to: today)!
+        let earliestSessionDate = sessions
+            .map(\.startedAt)
+            .min()
+            .map { calendar.startOfDay(for: $0) }
+        let visibleStart = max(earliestSessionDate ?? recentLimit, recentLimit)
+        let startDate = self.startOfWeek(for: visibleStart, calendar: calendar)
+        let endDate = self.endOfWeek(for: today, calendar: calendar)
 
         var dayTotals: [Date: Double] = [:]
         for session in sessions where session.startedAt >= startDate {
@@ -57,7 +67,7 @@ final class AnalyticsEngine {
 
         var cells: [AnalyticsHeatmapCell] = []
         var currentDate = startDate
-        while currentDate <= today {
+        while currentDate <= endDate {
             let seconds = dayTotals[currentDate] ?? 0
             let level = intensityLevel(for: seconds)
             cells.append(
@@ -276,6 +286,18 @@ final class AnalyticsEngine {
         if minutes < 60 { return 3 }
         if minutes < 120 { return 4 }
         return 5
+    }
+
+    private func startOfWeek(for date: Date, calendar: Calendar) -> Date {
+        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        return calendar.date(from: components) ?? calendar.startOfDay(for: date)
+    }
+
+    private func endOfWeek(for date: Date, calendar: Calendar) -> Date {
+        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start else {
+            return calendar.startOfDay(for: date)
+        }
+        return calendar.date(byAdding: .day, value: 6, to: weekStart) ?? calendar.startOfDay(for: date)
     }
 
     private func isWithinRange(_ date: Date, startDate: Date?, endDate: Date?) -> Bool {

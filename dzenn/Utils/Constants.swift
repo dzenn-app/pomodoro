@@ -79,6 +79,7 @@ enum AppConstants {
         static let analyticsEnabledKey = "analyticsEnabled"
         static let defaultDashboardRangeDays = 30
         static let heatmapDays = 30
+        static let heatmapWeeks = 17
         static let weeklySummaryDays = 7
 
         static let supportedBrowsers: [String: String] = [
