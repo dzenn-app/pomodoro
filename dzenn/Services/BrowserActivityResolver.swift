@@ -8,7 +8,7 @@ final class BrowserActivityResolver {
 
     func resolve(for app: NSRunningApplication) -> WebsiteVisitRecord? {
         guard let bundleID = app.bundleIdentifier,
-              let browserName = AppConstants.AnalyticsSettings.supportedBrowsers[bundleID] else {
+              AppConstants.AnalyticsSettings.supportedBrowsers[bundleID] != nil else {
             return nil
         }
 

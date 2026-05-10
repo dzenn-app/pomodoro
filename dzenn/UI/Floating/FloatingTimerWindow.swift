@@ -117,59 +117,62 @@ struct FloatingTimerView: View {
         .padding(padding)
     }
 
-    @ViewBuilder
-    private func panelBackground(theme: FloatingTheme, opacity: Double, isTimerOnly: Bool = false) -> some View {
-        let panelShape = RoundedRectangle(cornerRadius: 18)
-        let baseBackground = panelShape.fill(theme.backgroundColor.opacity(opacity))
+@ViewBuilder
+private func panelBackground(theme: FloatingTheme, opacity: Double, isTimerOnly: Bool = false) -> some View {
+    let panelShape = RoundedRectangle(cornerRadius: 18)
+    let baseBackground = panelShape.fill(theme.backgroundColor.opacity(opacity))
 
-        if isTimerOnly {
-            baseBackground
-                .overlay(panelShape.stroke(Color.black.opacity(0.3), lineWidth: 1))
-                .shadow(color: Color.black.opacity(0.30), radius: 32, x: 0, y: 16)
-                .shadow(color: Color.black.opacity(0.30), radius: 16, x: 0, y: 8)
-                .shadow(color: Color.black.opacity(0.24), radius: 8, x: 0, y: 4)
-                .shadow(color: Color.black.opacity(0.24), radius: 4, x: 0, y: 2)
-                .shadow(color: Color.black.opacity(0.16), radius: 0, x: 0, y: -8)
-                .shadow(color: Color.black.opacity(0.24), radius: 2, x: 0, y: 1)
-                .overlay(
-                    panelShape
-                        .stroke(Color.black.opacity(1.0), lineWidth: 1)
-                )
-                .overlay(
-                    panelShape
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.08),
-                                    Color.white.opacity(0.0)
-                                ]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                )
-                .overlay(
-                    panelShape
-                        .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.20),
-                                    Color.white.opacity(0.0)
-                                ]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 1
-                        )
-                )
-        } else {
-            baseBackground
-                .overlay(
-                    panelShape
-                        .stroke(theme.borderColor, lineWidth: 1))
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        }
+    if isTimerOnly {
+        baseBackground
+            // === Drop Shadows (luar ke dalam, besar ke kecil) ===
+            // shadow-[0px_32px_64px_-16px_rgba(0,0,0,0.30)] → blur=64 → radius=32, y=32
+            .shadow(color: Color.black.opacity(0.30), radius: 32, x: 0, y: 32)
+            // shadow-[0px_16px_32px_-8px_rgba(0,0,0,0.30)] → blur=32 → radius=16, y=16
+            .shadow(color: Color.black.opacity(0.30), radius: 16, x: 0, y: 16)
+            // shadow-[0px_8px_16px_-4px_rgba(0,0,0,0.24)] → blur=16 → radius=8, y=8
+            .shadow(color: Color.black.opacity(0.24), radius: 8, x: 0, y: 8)
+            // shadow-[0px_4px_8px_-2px_rgba(0,0,0,0.24)] → blur=8 → radius=4, y=4
+            .shadow(color: Color.black.opacity(0.24), radius: 4, x: 0, y: 4)
+            // shadow-[0px_-8px_16px_-1px_rgba(0,0,0,0.16)] → blur=16 → radius=8, y=-8 (shadow ke atas)
+            .shadow(color: Color.black.opacity(0.16), radius: 8, x: 0, y: -8)
+            // shadow-[0px_2px_4px_-1px_rgba(0,0,0,0.24)] → blur=4 → radius=2, y=2
+            .shadow(color: Color.black.opacity(0.24), radius: 2, x: 0, y: 2)
+
+            // === Outer Border: shadow-[0px_0px_0px_1px_rgba(0,0,0,1.00)] ===
+            // Simulasi border hitam solid (spread=1 tanpa blur) → pakai stroke
+            .overlay(
+                panelShape
+                    .stroke(Color.black.opacity(1.0), lineWidth: 1)
+            )
+
+            .overlay(
+                panelShape
+                    .fill(Color.white.opacity(0.08))
+                    .blendMode(.plusLighter)
+            )
+
+            .overlay(
+                panelShape
+                    .stroke(
+                        LinearGradient(
+                            gradient: Gradient(stops: [
+                                .init(color: Color.white.opacity(0.20), location: 0.0),
+                                .init(color: Color.white.opacity(0.0),  location: 0.15)
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 1
+                    )
+            )
+    } else {
+        baseBackground
+            .overlay(
+                panelShape
+                    .stroke(theme.borderColor, lineWidth: 1))
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
+}
 
     private func loadImage(path: String) -> NSImage? {
         guard !path.isEmpty else { return nil }
@@ -182,7 +185,7 @@ struct FloatingTimerView: View {
         case .timerOnly:
             FloatingTheme.from(id: self.selectedThemeID)
         case .mixed, .imageOnly:
-            .graphite
+            .obsidian
         }
     }
 

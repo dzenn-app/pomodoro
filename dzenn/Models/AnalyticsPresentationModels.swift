@@ -21,7 +21,7 @@ struct AnalyticsHeatmapCell: Identifiable, Hashable {
 }
 
 struct AnalyticsBreakdownItem: Identifiable, Hashable, Codable {
-    let id = UUID()
+    var id = UUID()
     var name: String
     var seconds: Double
     var icon: String?
