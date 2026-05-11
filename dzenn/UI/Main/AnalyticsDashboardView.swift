@@ -49,7 +49,9 @@ struct AnalyticsDashboardView: View {
             self.emptyStateView(emptyState)
         case .loaded(let data):
             AnalyticsHeatmapView(cells: data.heatmapCells, selectedDate: self.$selectedDay)
-            self.sessionSummariesView(data: data)
+            self.dayOverviewView(data: data)
+            // Session Summaries - deferred to next release
+            // self.sessionSummariesView(data: data)
             AnalyticsBreakdownView(
                 date: self.selectedDay,
                 apps: self.selectedDayApps(in: data),
@@ -70,6 +72,56 @@ struct AnalyticsDashboardView: View {
         }
     }
 
+    @ViewBuilder
+    private func dayOverviewView(data: AnalyticsDashboardData) -> some View {
+        let sessions = self.selectedDaySessions(in: data)
+        let totalFocusSeconds = sessions.reduce(0) { $0 + $1.actualFocusSeconds }
+        let completedCount = sessions.filter { $0.completed }.count
+        let interruptedCount = sessions.filter { !$0.completed }.count
+
+        SettingsSurfaceCard {
+            VStack(alignment: .leading, spacing: 16) {
+                SettingsSectionHeading(
+                    title: "Day Overview",
+                    subtitle: "Focus summary for \(Self.selectedDayFormatter.string(from: self.selectedDay)).")
+
+                if sessions.isEmpty {
+                    Text("No sessions recorded for this day.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                } else {
+                    HStack(spacing: 16) {
+                        OverviewStatCard(
+                            title: "Total Focus",
+                            value: Self.formatDuration(totalFocusSeconds),
+                            icon: "clock.fill",
+                            color: .blue)
+
+                        OverviewStatCard(
+                            title: "Sessions",
+                            value: "\(sessions.count)",
+                            icon: "repeat.circle.fill",
+                            color: .purple)
+
+                        OverviewStatCard(
+                            title: "Completed",
+                            value: "\(completedCount)",
+                            icon: "checkmark.circle.fill",
+                            color: .green)
+
+                        OverviewStatCard(
+                            title: "Interrupted",
+                            value: "\(interruptedCount)",
+                            icon: "xmark.circle.fill",
+                            color: .orange)
+                    }
+                }
+            }
+        }
+    }
+
+    // Session Summaries - deferred to next release
+    /*
     @ViewBuilder
     private func sessionSummariesView(data: AnalyticsDashboardData) -> some View {
         let sessions = self.selectedDaySessions(in: data)
@@ -97,6 +149,7 @@ struct AnalyticsDashboardView: View {
             }
         }
     }
+    */
 
     private func loadData() {
         let data = self.usePreviewData ? self.makePreviewData() : self.makeStoredData()
@@ -365,6 +418,16 @@ struct AnalyticsDashboardView: View {
         formatter.dateFormat = "EEEE, d MMMM"
         return formatter
     }()
+
+    private static func formatDuration(_ seconds: Double) -> String {
+        let totalMinutes = Int(seconds / 60)
+        if totalMinutes >= 60 {
+            let hours = totalMinutes / 60
+            let minutes = totalMinutes % 60
+            return "\(hours)h \(minutes)m"
+        }
+        return "\(totalMinutes)m"
+    }
 }
 
 private enum DashboardState {
@@ -376,6 +439,41 @@ private enum DashboardState {
 private enum DashboardEmptyState {
     case noData
     case noSessions
+}
+
+private struct OverviewStatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: self.icon)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(self.color)
+
+                Text(self.title)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Text(self.value)
+                .font(.title2)
+                .fontWeight(.bold)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.white.opacity(0.03))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
+    }
 }
 
 private struct AnalyticsDashboardData {
@@ -500,6 +598,12 @@ private struct AnalyticsSessionSummaryCard: View {
         .clipShape(Capsule(style: .continuous))
     }
 
+    private static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
+
     private static func formatDuration(_ seconds: Double) -> String {
         let totalMinutes = Int(seconds / 60)
         if totalMinutes >= 60 {
@@ -509,10 +613,4 @@ private struct AnalyticsSessionSummaryCard: View {
         }
         return "\(totalMinutes)m"
     }
-
-    private static let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
 }
