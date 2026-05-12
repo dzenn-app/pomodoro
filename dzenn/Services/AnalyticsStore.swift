@@ -5,6 +5,7 @@ final class AnalyticsStore {
 
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
+    private let ioQueue = DispatchQueue(label: "com.personal.dzenn.analyticsstore.io")
 
     init() {
         encoder.dateEncodingStrategy = .iso8601
@@ -86,7 +87,8 @@ final class AnalyticsStore {
     // MARK: - Prune
 
     func pruneOldData() {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -AppConstants.AnalyticsSettings.retentionDays, to: Date()) ?? Date()
+        let days = AppConstants.AnalyticsSettings.retentionDays
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
 
         var sessions = loadFocusSessions()
         sessions.removeAll { $0.startedAt < cutoff }
@@ -115,12 +117,15 @@ final class AnalyticsStore {
     }
 
     private func save<T: Encodable>(_ value: T, to filename: String) {
-        let url = fileURL(for: filename)
-        do {
-            let data = try encoder.encode(value)
-            try data.write(to: url, options: .atomic)
-        } catch {
-            print("[AnalyticsStore] Save error for \(filename): \(error)")
+        ioQueue.async { [weak self] in
+            guard let self else { return }
+            let url = self.fileURL(for: filename)
+            do {
+                let data = try self.encoder.encode(value)
+                try data.write(to: url, options: .atomic)
+            } catch {
+                print("[AnalyticsStore] Save error for \(filename): \(error)")
+            }
         }
     }
 }

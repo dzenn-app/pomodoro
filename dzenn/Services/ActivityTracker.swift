@@ -67,11 +67,22 @@ final class ActivityTracker: NSObject, ObservableObject {
 
         if let bundleID = app.bundleIdentifier,
            let tabInfo = BrowserActivityResolver.shared.resolveCurrentTab(for: bundleID) {
-            captureWebsiteVisit(sessionID: currentSessionID, bundleID: bundleID, appName: currentAppName ?? "Unknown", domain: tabInfo.domain, title: tabInfo.title)
+            captureWebsiteVisit(
+                sessionID: currentSessionID,
+                bundleID: bundleID,
+                appName: currentAppName ?? "Unknown",
+                domain: tabInfo.domain,
+                title: tabInfo.title)
         }
     }
 
-    private func captureWebsiteVisit(sessionID: UUID?, bundleID: String, appName: String, domain: String, title: String?) {
+    private func captureWebsiteVisit(
+        sessionID: UUID?,
+        bundleID: String,
+        appName: String,
+        domain: String,
+        title: String?)
+    {
         guard let sessionID = sessionID else { return }
         let visit = WebsiteVisitRecord(
             sessionID: sessionID,
@@ -97,15 +108,26 @@ final class ActivityTracker: NSObject, ObservableObject {
 
         guard duration > 0 else { return }
 
-        let event = AppActivityEvent(
-            sessionID: sessionID,
-            appBundleID: bundleID,
-            appName: name,
-            startedAt: startTime,
-            endedAt: endTime,
-            durationSeconds: duration
-        )
-        pendingEvents.append(event)
+        if let lastEventIndex = pendingEvents.indices.last,
+           let lastEvent = pendingEvents[lastEventIndex].endedAt,
+           pendingEvents[lastEventIndex].appBundleID == bundleID,
+           lastEvent == startTime
+        {
+            var lastEvent = pendingEvents[lastEventIndex]
+            lastEvent.endedAt = endTime
+            lastEvent.durationSeconds = endTime.timeIntervalSince(lastEvent.startedAt)
+            pendingEvents[lastEventIndex] = lastEvent
+        } else {
+            let event = AppActivityEvent(
+                sessionID: sessionID,
+                appBundleID: bundleID,
+                appName: name,
+                startedAt: startTime,
+                endedAt: endTime,
+                durationSeconds: duration
+            )
+            pendingEvents.append(event)
+        }
 
         finalizeCurrentWebsiteVisit(endTime: endTime)
 
@@ -116,7 +138,8 @@ final class ActivityTracker: NSObject, ObservableObject {
 
     private func finalizeCurrentWebsiteVisit(endTime: Date) {
         guard let lastVisitIndex = pendingWebsiteVisits.indices.last,
-              pendingWebsiteVisits[lastVisitIndex].endedAt == nil else { return }
+              pendingWebsiteVisits[lastVisitIndex].endedAt == nil
+        else { return }
 
         var visit = pendingWebsiteVisits[lastVisitIndex]
         let duration = endTime.timeIntervalSince(visit.startedAt)
@@ -126,6 +149,9 @@ final class ActivityTracker: NSObject, ObservableObject {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NSWorkspace.didActivateApplicationNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: NSWorkspace.didActivateApplicationNotification,
+            object: nil)
     }
 }

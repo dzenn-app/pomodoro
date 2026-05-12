@@ -46,39 +46,39 @@ enum AnalyticsPreviewFactory {
     static func makeTimelineEntries() -> [AnalyticsTimelineEntry] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
+        let h9 = calendar.date(byAdding: .hour, value: 9, to: today)!
+        let h10 = calendar.date(byAdding: .hour, value: 10, to: today)!
+        let h11 = calendar.date(byAdding: .hour, value: 11, to: today)!
+        let h13 = calendar.date(byAdding: .hour, value: 13, to: today)!
         return [
             AnalyticsTimelineEntry(
-                startedAt: calendar.date(byAdding: .hour, value: 9, to: today)!,
-                endedAt: calendar.date(byAdding: .minute, value: 45, to: calendar.date(byAdding: .hour, value: 9, to: today)!)!,
+                startedAt: h9,
+                endedAt: calendar.date(byAdding: .minute, value: 45, to: h9)!,
                 kind: .app,
                 name: "Xcode",
                 detail: "Project dzenn",
-                seconds: 2700
-            ),
+                seconds: 2700),
             AnalyticsTimelineEntry(
-                startedAt: calendar.date(byAdding: .hour, value: 10, to: today)!,
-                endedAt: calendar.date(byAdding: .minute, value: 20, to: calendar.date(byAdding: .hour, value: 10, to: today)!)!,
+                startedAt: h10,
+                endedAt: calendar.date(byAdding: .minute, value: 20, to: h10)!,
                 kind: .website,
                 name: "github.com",
                 detail: "Pull Requests",
-                seconds: 1200
-            ),
+                seconds: 1200),
             AnalyticsTimelineEntry(
-                startedAt: calendar.date(byAdding: .hour, value: 11, to: today)!,
-                endedAt: calendar.date(byAdding: .minute, value: 30, to: calendar.date(byAdding: .hour, value: 11, to: today)!)!,
+                startedAt: h11,
+                endedAt: calendar.date(byAdding: .minute, value: 30, to: h11)!,
                 kind: .app,
                 name: "Safari",
                 detail: "Reading docs",
-                seconds: 1800
-            ),
+                seconds: 1800),
             AnalyticsTimelineEntry(
-                startedAt: calendar.date(byAdding: .hour, value: 13, to: today)!,
-                endedAt: calendar.date(byAdding: .minute, value: 15, to: calendar.date(byAdding: .hour, value: 13, to: today)!)!,
+                startedAt: h13,
+                endedAt: calendar.date(byAdding: .minute, value: 15, to: h13)!,
                 kind: .website,
                 name: "stackoverflow.com",
                 detail: "Swift question",
-                seconds: 900
-            ),
+                seconds: 900),
         ]
     }
 

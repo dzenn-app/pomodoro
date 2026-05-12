@@ -46,12 +46,17 @@ final class FocusSessionManager: ObservableObject {
         self.state = .running(mode: .quickSession, phase: .focus)
         self.completionHandled = false
 
-        let sessionRecord = FocusSessionRecord(
-            plannedMinutes: Int(duration / 60),
-            sessionMode: .quickSession
-        )
-        self.activeSessionRecord = sessionRecord
-        ActivityTracker.shared.startTracking(sessionID: sessionRecord.id)
+        if AppConstants.AnalyticsSettings.isAnalyticsEnabled {
+            let sessionRecord = FocusSessionRecord(
+                plannedMinutes: Int(duration / 60),
+                actualFocusSeconds: 0,
+                sessionMode: .quickSession,
+                taskTitle: task,
+                taskPlanId: nil
+            )
+            self.activeSessionRecord = sessionRecord
+            ActivityTracker.shared.startTracking(sessionID: sessionRecord.id)
+        }
 
         self.timerService.start(duration: duration)
     }
@@ -129,7 +134,8 @@ final class FocusSessionManager: ObservableObject {
     }
 
     private func finalizeAnalyticsSession(completed: Bool, interruptedReason: String? = nil) {
-        guard var sessionRecord = self.activeSessionRecord else { return }
+        guard AppConstants.AnalyticsSettings.isAnalyticsEnabled,
+              var sessionRecord = self.activeSessionRecord else { return }
 
         let (appEvents, websiteVisits) = ActivityTracker.shared.stopTracking()
         let focusSeconds = appEvents.reduce(0) { $0 + $1.durationSeconds }

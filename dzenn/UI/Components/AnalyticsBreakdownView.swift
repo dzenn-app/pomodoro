@@ -54,24 +54,28 @@ struct AnalyticsBreakdownView: View {
             Text("Website tracking disabled")
                 .font(.headline)
 
-            Text("Dzenn needs Automation permission to track Safari and Chrome tabs. Without this, only app names will be recorded.")
+            Text("Dzenn needs Automation permission to track Safari and Chrome tabs.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            Text("Without this, only app names will be recorded.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
 
-            Button(action: {
-                self.permissionsManager.openAutomationSettings()
-            }) {
-                HStack {
-                    Image(systemName: "gearshape")
-                    Text("Open System Settings")
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(Color.accentColor)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-            }
+            Button(
+                action: { self.permissionsManager.openAutomationSettings() },
+                label: {
+                    HStack {
+                        Image(systemName: "gearshape")
+                        Text("Open System Settings")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                })
             .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, minHeight: 180)
